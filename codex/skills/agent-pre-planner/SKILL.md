@@ -1,6 +1,6 @@
 ---
 name: agent-pre-planner
-description: Runs a multi-agent pre-plan analysis (auto-sized team of one to seven analysts plus a sceptic) over an issue, file set, or conversation brief before entering plan mode. Produces a two-part report -- an enhanced brief followed by consolidated findings -- consumed by $ace:plan-start or a planning agent. Downstream of $ace:agent-arch-review and $ace:agent-scope, whose reports it consumes as briefs; not a post-implementation code review -- that is $ace:agent-code-review.
+description: Runs a multi-agent pre-plan analysis (auto-sized team of one to seven analysts plus a sceptic) over an issue, file set, or conversation brief before entering plan mode. Produces a two-part report -- an enhanced brief followed by consolidated findings -- consumed by $ace-classic:plan-start or a planning agent. Downstream of $ace-classic:agent-arch-review and $ace-classic:agent-scope, whose reports it consumes as briefs; not a post-implementation code review -- that is $ace-classic:agent-code-review.
 ---
 # Run a pre-plan analysis
 
@@ -8,10 +8,10 @@ description: Runs a multi-agent pre-plan analysis (auto-sized team of one to sev
 
 ## Usage
 
-- `$ace:agent-pre-planner` — uses the most recent actionable user message as the brief
-- `$ace:agent-pre-planner <issue>` — uses the specified issue number (e.g., `85`)
-- `$ace:agent-pre-planner <file1> <file2> ...` — reads files as the brief
-- `$ace:agent-pre-planner [--model <name or instruction>] [--agents 1-7] [--publish yes|no] <inputs ...>` — flags first (in any order), positional second
+- `$ace-classic:agent-pre-planner` — uses the most recent actionable user message as the brief
+- `$ace-classic:agent-pre-planner <issue>` — uses the specified issue number (e.g., `85`)
+- `$ace-classic:agent-pre-planner <file1> <file2> ...` — reads files as the brief
+- `$ace-classic:agent-pre-planner [--model <name or instruction>] [--agents 1-7] [--publish yes|no] <inputs ...>` — flags first (in any order), positional second
 - `--model` directs model selection for every analyst (sceptic included) — a model name or a prose instruction (a tier, a mix, a reference), resolved against the models the harness offers. Omit `--model` to let Phase 3 assign per agent: the sceptic on Tier-2, other analysts on Tier-3, plus at most one Tier-2 promotion for a load-bearing concern in broad or cross-cutting scope.
 - `--agents N` sets the number of **non-sceptic** analysts (`1-7`). The sceptic is always added on top, so total analysts = `N + 1`. Omit `--agents` to auto-size the team from the scope discovered during exploration.
 - `--publish yes|no` — publish the saved report as a GitHub issue (Phase 9, after the final save). Default `no`.
@@ -33,7 +33,7 @@ Use this before entering plan mode.
 It spawns an analysis team to explore the codebase from multiple angles, surface risks, correct assumptions, and identify opportunities. 
 The output is a two-part report: an enhanced brief followed by a consolidated findings list.
 
-Unlike the review commands, this command takes no `--prior` flag: a pre-planner report's re-consumption channel is `$ace:plan-start` itself — passing the report (or its published issue) as the brief carries `[Resolved]` decisions forward as binding constraints and preserves its identifier namespace — so no separate re-review machinery is needed.
+Unlike the review commands, this command takes no `--prior` flag: a pre-planner report's re-consumption channel is `$ace-classic:plan-start` itself — passing the report (or its published issue) as the brief carries `[Resolved]` decisions forward as binding constraints and preserves its identifier namespace — so no separate re-review machinery is needed.
 
 ## Task
 
@@ -90,7 +90,7 @@ The `N` non-sceptic analysts receive the specialisations named in Phase 3. One a
 
 ### Phase 5 — Collect analyses
 
-Collect the analysts' final messages, run the tree-hygiene check against the Phase 4 capture, and apply the member-failure and sceptic re-spawn rules, all per `../agent-shared/team-mechanics.md` (collect, tree-hygiene check, member failure and the sceptic). Once all `N + 1` have returned, proceed. Beyond the shared sceptic rule: the sceptic's absence undermines the downstream sceptic-veto gate (`$ace:plan-start` Phase 2.5, `../plan-start/references/pre-planner-transform.md`), which depends on the premise-challenge layer.
+Collect the analysts' final messages, run the tree-hygiene check against the Phase 4 capture, and apply the member-failure and sceptic re-spawn rules, all per `../agent-shared/team-mechanics.md` (collect, tree-hygiene check, member failure and the sceptic). Once all `N + 1` have returned, proceed. Beyond the shared sceptic rule: the sceptic's absence undermines the downstream sceptic-veto gate (`$ace-classic:plan-start` Phase 2.5, `../plan-start/references/pre-planner-transform.md`), which depends on the premise-challenge layer.
 
 ### Phase 6 — Generate report
 
@@ -111,7 +111,7 @@ Apply the shared regeneration rules, plus the pre-planner-local additions below:
 - A derived brief may be a multi-section report (an enhanced-brief section plus findings, appendices, and folded-in consultation answers) rather than a linear brief to walk: assembling the scoped subset into one coherent itemised brief is expected synthesis, not a deviation from the shared carry-forward rule
 - Informal prose citation of upstream findings (e.g. "corrects the arch-review's O3 framing") is acceptable style with no mandated namespace. This rule is the canonical copy; `../agent-scope/SKILL.md` carries an aligned copy of it
 
-**Open questions** remain as a distinct subsection — they require user input and cannot be resolved into the narrative. Each line begins with the question's `Q{n}` identifier (matching its `### Question` finding) and a single trailing space, followed by its priority tag `[blocking]` or `[deferrable]` verbatim; both are mandatory on every line — prose group labels do not substitute for them. `$ace:plan-start`'s transform (`../plan-start/references/pre-planner-transform.md`) matches the tags literally over this block and anchors its write-back on `Q{n} `; the anchor rule is restated beside the skeleton in `assets/report-template.md`. Order the lines blocking first, then deferrable.
+**Open questions** remain as a distinct subsection — they require user input and cannot be resolved into the narrative. Each line begins with the question's `Q{n}` identifier (matching its `### Question` finding) and a single trailing space, followed by its priority tag `[blocking]` or `[deferrable]` verbatim; both are mandatory on every line — prose group labels do not substitute for them. `$ace-classic:plan-start`'s transform (`../plan-start/references/pre-planner-transform.md`) matches the tags literally over this block and anchors its write-back on `Q{n} `; the anchor rule is restated beside the skeleton in `assets/report-template.md`. Order the lines blocking first, then deferrable.
 
 A finding marked `(optional)` — in the Scope directive's id list or, when the directive carries bare ids, in the input document's own covers list — is an owner decision deferred to this run: surface its keep/drop fate as a `[deferrable]` open question, with the analysts' consensus as the recommended option — never silently fold the recommendation in, even when the analysts agree. Silently folding costs the owner the decision; a deferrable question costs one interview option.
 
@@ -119,7 +119,7 @@ If the scope is large enough to warrant multiple implementation stages, include 
 
 When splitting is warranted, list each plan with a short title, its constituent tasks, dependencies on prior plans, and a validation gate (how to verify that plan's work before proceeding). Order plans by dependency — earlier plans must not depend on later ones. When the scope is narrow, state that a single plan is sufficient.
 
-End the split with an explicit machine-checkable recommendation line: `Recommendation: {N} plan(s)` (e.g. `Recommendation: 1 plan`) when planning is warranted, or `Recommendation: no plan` when the analysis argues against producing a plan. `$ace:plan-start` Phase 2.5 (`../plan-start/references/pre-planner-transform.md`) matches this line before falling back to its prose regex, so the line is mandatory.
+End the split with an explicit machine-checkable recommendation line: `Recommendation: {N} plan(s)` (e.g. `Recommendation: 1 plan`) when planning is warranted, or `Recommendation: no plan` when the analysis argues against producing a plan. `$ace-classic:plan-start` Phase 2.5 (`../plan-start/references/pre-planner-transform.md`) matches this line before falling back to its prose regex, so the line is mandatory.
 
 When the split's shape depends on an open question, emit the split as an explicit placeholder stating the dependency (which question, which shapes each answer produces); Phase 8 finalises it after the interview.
 
@@ -135,7 +135,7 @@ If the report contains an `### Open questions` subsection with questions, procee
 
 ### Phase 8 — Interview
 
-Follow the canonical interview procedure in `../agent-shared/interview.md` — read it now; it carries the run/collect/update/save mechanics and the unresolved-marker grammar. Two stated divergences: deferrable questions left unanswered flow to the planner via `$ace:plan-start`'s "Resolve in the plan" constraint lines (its pre-planner transform, `../plan-start/references/pre-planner-transform.md`) rather than being re-asked (deferrable questions are still interviewed whenever the user is present), and when one question's relevance depends on another's answer, fold the conditional into the parent question's options rather than asking it separately. These two rules are the canonical copy; `../agent-scope/SKILL.md` carries an aligned copy of them.
+Follow the canonical interview procedure in `../agent-shared/interview.md` — read it now; it carries the run/collect/update/save mechanics and the unresolved-marker grammar. Two stated divergences: deferrable questions left unanswered flow to the planner via `$ace-classic:plan-start`'s "Resolve in the plan" constraint lines (its pre-planner transform, `../plan-start/references/pre-planner-transform.md`) rather than being re-asked (deferrable questions are still interviewed whenever the user is present), and when one question's relevance depends on another's answer, fold the conditional into the parent question's options rather than asking it separately. These two rules are the canonical copy; `../agent-scope/SKILL.md` carries an aligned copy of them.
 
 Local bindings for the shared update rules:
 

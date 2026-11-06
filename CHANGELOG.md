@@ -5,6 +5,30 @@ All notable changes to this project are documented in this file.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project
 adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2-classic]
+
+Archived snapshot. This repository is a frozen, read-only copy of `ardallie/ace-in-my-space` at
+commit `70d8f84` (version `0.4.2`, tag `v0.4.2-classic`) -- the classic `agent-*`, `plan-*`,
+`pr-*`, `report-*`, `run-*`, and `detect-harness` suite as it stood before any `scope-*` or `ws-*`
+skill existed. History up to that commit is preserved; no further changes are planned. Manifest
+versions stay at `0.4.2`.
+
+### Changed -- plugin renamed to `ace-classic`
+
+- The plugin is now `ace-classic` (was `ace`) and the marketplace is `ace-classic` (was
+  `ace-in-my-space`) in both the Claude and Codex manifests, so it installs alongside the current
+  `ace` plugin: `ace-classic@ace-classic`.
+- Skills are invoked as `/ace-classic:{name}` under Claude Code and `$ace-classic:{name}` under
+  Codex; subagents are addressed as `ace-classic:{name}` (for example `ace-classic:plan-drafter`).
+- Homepage, repository, and website URLs point to `https://github.com/ardallie/ace-classic`.
+- `scripts/check-codex.mjs` checks the new namespace and rejects any leftover pre-snapshot
+  `/ace:`, `$ace:`, or `ace:` form; the Codex edition under `codex/` is regenerated from the
+  renamed source.
+- The `.ace/` working directories are unchanged and shared with the current suite, so avoid
+  running both suites in one project at once.
+
+Entries below are the upstream history and still use the pre-snapshot `ace` namespace.
+
 ## [0.4.2]
 
 ### Changed -- harness tier mappings

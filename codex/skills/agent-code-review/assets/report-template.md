@@ -17,7 +17,7 @@ Prior: {path passed to --prior}
 
 **Verdict:** [one line — merge impact, bound to the applied tier, e.g. "nothing blocks the merge", or "nothing blocks the merge on the cheap battery; tests, lint, format, and the build were not run" where the tier left gate classes unrun — under `cheap` or `skip`, or wherever the tier resolved to an empty gate set]
 
-**Tip:** start a new conversation and act on this report with `$ace:report-triage` (pass the report path or its published issue number) — it verifies the findings against HEAD and applies them.
+**Tip:** start a new conversation and act on this report with `$ace-classic:report-triage` (pass the report path or its published issue number) — it verifies the findings against HEAD and applies them.
 
 ## Reviewers
 

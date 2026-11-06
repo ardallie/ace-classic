@@ -1,6 +1,6 @@
 ---
 name: agent-arch-review
-description: Runs a multi-agent architectural review (three to six analysts, sceptic included) over a feature, subsystem, structure mapping, GitHub issue, or file set. Produces a two-part report -- an enhanced brief followed by consolidated findings -- that feeds into $ace:agent-pre-planner or a planning session. Not a code review -- use $ace:agent-code-review for pre-PR review.
+description: Runs a multi-agent architectural review (three to six analysts, sceptic included) over a feature, subsystem, structure mapping, GitHub issue, or file set. Produces a two-part report -- an enhanced brief followed by consolidated findings -- that feeds into $ace-classic:agent-pre-planner or a planning session. Not a code review -- use $ace-classic:agent-code-review for pre-PR review.
 ---
 # Run an architectural review
 
@@ -8,10 +8,10 @@ description: Runs a multi-agent architectural review (three to six analysts, sce
 
 ## Usage
 
-- `$ace:agent-arch-review` — uses the most recent actionable user message as the scope area
-- `$ace:agent-arch-review <issue>` — uses the specified issue (bare number, e.g. `85`, or full issue URL)
-- `$ace:agent-arch-review <file1> <file2> ...` — reads files as the scope area definition
-- `$ace:agent-arch-review [--model <name or instruction>] [--prior <report-path>] [--checks full|cheap|skip] [--publish yes|no] <inputs ...>` — flags first (in any order), positional second
+- `$ace-classic:agent-arch-review` — uses the most recent actionable user message as the scope area
+- `$ace-classic:agent-arch-review <issue>` — uses the specified issue (bare number, e.g. `85`, or full issue URL)
+- `$ace-classic:agent-arch-review <file1> <file2> ...` — reads files as the scope area definition
+- `$ace-classic:agent-arch-review [--model <name or instruction>] [--prior <report-path>] [--checks full|cheap|skip] [--publish yes|no] <inputs ...>` — flags first (in any order), positional second
 - `--model` directs model selection for every analyst (sceptic included) — a model name or a prose instruction (a tier, a mix, a reference), resolved against the models the harness offers. Omit `--model` to let Phase 3 assign per agent: the sceptic on Tier-2, other analysts on Tier-3, plus at most one Tier-2 promotion for a load-bearing concern.
 - `--prior P` — path to a previous arch-review report for the same scope; analysts verify its findings against the current state (re-review). Prior reports are pushed only when passed explicitly — there is no auto-detection. The prior report also carries forward interview decisions (its `[Resolved]` question answers) — pass it for any repeat review of the same scope, not only to verify remediation. A `--prior`-only invocation (no positional inputs) is the canonical re-review-same-scope form — the scope seeds from the prior report (Phase 1).
 - `--checks full|cheap|skip` — how much of the Phase 2 shared verification battery runs before analysts spawn; tier definitions in `../agent-shared/verification-checks.md`. Default `cheap` — the typical review runs the cheap battery; `full` (the whole CI gate set) and `skip` (no shared battery; the report, context package, and spawn prompts record that) are per-run opt-ins. `skip` does not suppress the `--prior` pre-build (Phase 3).
@@ -20,9 +20,9 @@ description: Runs a multi-agent architectural review (three to six analysts, sce
 
 Mapping files under `.ace/mappings/{features,subsystems,structure}/` are classified by path prefix and traversed per type. Examples:
 
-- `$ace:agent-arch-review .ace/mappings/features/{slug}.md` — feature scope
-- `$ace:agent-arch-review .ace/mappings/subsystems/{slug}.md` — subsystem scope
-- `$ace:agent-arch-review .ace/mappings/structure/{package}/{module}.md` — structure scope
+- `$ace-classic:agent-arch-review .ace/mappings/features/{slug}.md` — feature scope
+- `$ace-classic:agent-arch-review .ace/mappings/subsystems/{slug}.md` — subsystem scope
+- `$ace-classic:agent-arch-review .ace/mappings/structure/{package}/{module}.md` — structure scope
 
 ## Shared conventions
 
@@ -41,7 +41,7 @@ Use this for systematic architectural review, feature by feature or module by mo
 
 Each invocation spawns an analysis team that examines the chosen scope from multiple angles. The output is a two-part report: an enhanced brief followed by a consolidated findings list.
 
-This is not a code review — it produces architectural findings that feed directly into a pre-planning session. Invoke `$ace:agent-pre-planner` with this report, or pass it to a planning agent.
+This is not a code review — it produces architectural findings that feed directly into a pre-planning session. Invoke `$ace-classic:agent-pre-planner` with this report, or pass it to a planning agent.
 
 ## Task
 
@@ -198,7 +198,7 @@ Follow the publish phase in `../agent-shared/report-conventions.md` `## Publish`
 
 ## Constraints
 
-- The report feeds directly into `$ace:agent-pre-planner` or a planning agent — do not produce a change list or implementation plan
+- The report feeds directly into `$ace-classic:agent-pre-planner` or a planning agent — do not produce a change list or implementation plan
 - Mappings under `.ace/mappings/` are an adjacent-toolchain input per `../agent-shared/input-conventions.md` `## Adjacent-toolchain inputs` — the mappings-specific binding is in the Phase 3 mappings note
 
 ## Error handling

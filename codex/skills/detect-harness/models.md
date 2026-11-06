@@ -1,6 +1,6 @@
 # Harness model tiers
 
-Data file for `$ace:detect-harness` (`SKILL.md`),
+Data file for `$ace-classic:detect-harness` (`SKILL.md`),
 which reads the tier entries below and defines how consumers apply them. Tiers are this
 workflow suite's own capability classification, not any vendor's. Each
 tier maps to a model and a reasoning effort.

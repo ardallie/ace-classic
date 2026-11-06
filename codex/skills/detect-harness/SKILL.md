@@ -104,7 +104,7 @@ position (`model: {Tier-2}`). Consumers resolve them as follows:
 
 - Tier prescriptions resolve at spawn time against the latest valid cached resolution
   (see the cache check). When a fresh resolution is needed, follow Detection and
-  Output contract above. Invoking `$ace:detect-harness`, where available, is equivalent.
+  Output contract above. Invoking `$ace-classic:detect-harness`, where available, is equivalent.
 - Use a spawn mode that honours model overrides, following the harness constraints
   in `models.md`. If the calling workflow requires inheritance instead, report the
   assignment as inherited; do not claim the requested tier was applied.

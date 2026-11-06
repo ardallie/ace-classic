@@ -9,7 +9,7 @@ description: "Publishes any report or plan markdown file (pre-planner, arch-revi
 
 ## Usage
 
-- `$ace:report-publish <path>` — creates a GitHub issue whose body is the markdown artefact at `<path>`
+- `$ace-classic:report-publish <path>` — creates a GitHub issue whose body is the markdown artefact at `<path>`
 
 ## Context
 
@@ -21,7 +21,7 @@ After issue creation the pipeline records the created URL back into the artefact
 
 ## Task
 
-The path argument is mandatory. If it is missing, report `Usage: $ace:report-publish <path>` and stop.
+The path argument is mandatory. If it is missing, report `Usage: $ace-classic:report-publish <path>` and stop.
 
 **Pre-publish duplicate probe.** Before running the pipeline, probe for a prior publication: `tail -n 10 <path> | grep -m1 '^- Issue: '`. The probe is content-free: it surfaces only the linkage line the pipeline itself appends, and the tail scope confines the match to the append region at end-of-file — every published artefact carries its linkage on its final lines, and 10 lines covers a `## Publication` block plus accreted `- Issue:` lines. A body that merely quotes the bullet at line start — plausible for reports about this pack — false-positives only when the quote sits within the final 10 lines; the scope narrows that window rather than eliminating it, and a false positive costs one confirmation question. This probe is the reader for the duplicate-publish signal described under linkage-persistence below; it lives outside the bash pipeline, so producers executing the pipeline verbatim against freshly written artefacts (which carry no `- Issue:` line) are unaffected. The probe has four outcomes:
 
@@ -97,7 +97,7 @@ Linkage-persistence rules (the post-create append in the pipeline — also a sin
 
 - A `Type: plan` file receives `- Issue: <url>` appended as a bare bullet; the plan's trailing `## Validation audit` footer is the last block, so the bullet lands as the footer's final entry.
 - Any other artefact receives an appended `## Publication` block (blank line, H2, blank line, `- Issue: <url>`) — or only the bullet when a `## Publication` header already exists from a prior publish, so republication accretes visible `- Issue:` lines rather than duplicate headers.
-- The append is the durable local -> issue record: a later session holding only the file resolves the issue mechanically, and an existing `- Issue:` line is the on-disk duplicate-publish signal — read by this skill's pre-publish duplicate probe (which gates re-publication behind confirmation) and by `$ace:plan-start`'s local route as a published-twin signpost.
+- The append is the durable local -> issue record: a later session holding only the file resolves the issue mechanically, and an existing `- Issue:` line is the on-disk duplicate-publish signal — read by this skill's pre-publish duplicate probe (which gates re-publication behind confirmation) and by `$ace-classic:plan-start`'s local route as a published-twin signpost.
 - The published issue body predates the append and lacks it; the divergence is accepted.
 
 The empty-`$TITLE` guard stops the run before `gh issue create` — without it a file with neither a `Title:` field nor a `# ` H1 mints an issue with an empty title. The empty-`$URL` guard stops the run before the linkage append — without it a failed `gh issue create` (auth expiry, network, an unresolvable `git` subprocess) writes a bare `- Issue: ` bullet into the artefact, and a later successful `--body-file` create ships that corruption in the published body. On Windows MINGW64, `<path>` must be in POSIX form (`/c/...`) for the `head`/`grep`, redirection, and `--body-file` arguments. The `gh` command requires the current working directory to be within a git repository.
@@ -109,20 +109,20 @@ Capture `$URL` and report it.
 ## Producer publish phase
 
 - Covers the `--publish yes` arm only. Each producer's `--publish no` arm, its `--publish` default marker, and its own `Tip:` line stay local to that command.
-- Five producers reference this section: `agent-arch-review` Phase 8, `agent-code-review` Phase 8, `agent-pre-planner` Phase 9, `agent-scope` Phase 9, and `agent-consultant` Phase 9. `plan-start` Phase 10 is deliberately outside the set and spells its arm out in full: its title composition is plan-specific (a v1 plan carries `Type: plan`, so the title composes as `[PLAN] <plan H1>` from the H1 fallback rather than a `Title:` field), it carries its own MINGW POSIX-path note for the pipeline's arguments, and it names the standalone `$ace:report-publish <v1 path>` recovery path. An amendment here does not reach that site.
+- Five producers reference this section: `agent-arch-review` Phase 8, `agent-code-review` Phase 8, `agent-pre-planner` Phase 9, `agent-scope` Phase 9, and `agent-consultant` Phase 9. `plan-start` Phase 10 is deliberately outside the set and spells its arm out in full: its title composition is plan-specific (a v1 plan carries `Type: plan`, so the title composes as `[PLAN] <plan H1>` from the H1 fallback rather than a `Title:` field), it carries its own MINGW POSIX-path note for the pipeline's arguments, and it names the standalone `$ace-classic:report-publish <v1 path>` recovery path. An amendment here does not reach that site.
 - Execute this file's bash pipeline verbatim against the saved report path: read the pipeline from this file's `## Task` section and run it unchanged.
 - The title composes from the report's `Title:`/`Type:`/`Stage:` header fields; the body ships via `gh issue create --body-file`.
-- On publish failure each producer continues rather than stopping — the saved report stands regardless. Both local forms of that bullet are in the set and neither is a drift: one states the outcome only ("report the error verbatim and continue"), the other additionally names the fallback action ("print the ready-to-run `$ace:report-publish {report path}` line"). Aligning their wording is not a repair.
+- On publish failure each producer continues rather than stopping — the saved report stands regardless. Both local forms of that bullet are in the set and neither is a drift: one states the outcome only ("report the error verbatim and continue"), the other additionally names the fallback action ("print the ready-to-run `$ace-classic:report-publish {report path}` line"). Aligning their wording is not a repair.
 - Report the issue URL in the producer's final summary alongside the saved report path — the URL is additive, and the producer's own next-step `Tip:` line stays.
-- On issue-creation failure, report the `gh` error verbatim and print the ready-to-run `$ace:report-publish {report path}` line — the failure does not invalidate the saved report.
+- On issue-creation failure, report the `gh` error verbatim and print the ready-to-run `$ace-classic:report-publish {report path}` line — the failure does not invalidate the saved report.
 
 ## Error handling
 
 The no-read rule holds on every error path: never open the artefact to diagnose a failure. Diagnosis, when needed, is `head -n 25 <path>` through `exec_command` — the header window only, never the body.
 
-- If the path argument is missing, report `Usage: $ace:report-publish <path>` and stop
+- If the path argument is missing, report `Usage: $ace-classic:report-publish <path>` and stop
 - If the file at the given path does not exist or is empty, report the error and stop
-- If the file exceeds GitHub's 65,536-character issue-body limit, report the byte count and stop before `gh issue create` — the failure would otherwise land after the expensive producing run; the file is intact and re-runnable once trimmed or split. The guard compares bytes (`wc -c`) against the character limit as a deliberate conservative proxy: UTF-8 bytes ≥ characters, so it can only over-reject, never under-reject. This pipeline's guard is the canonical copy of the size pre-flight; `$ace:plan-update` carries one structurally identical copy (Phase 2A step 7, which Phase 2B step 5 executes by reference) — a limit or message change here lands at that site in the same change
+- If the file exceeds GitHub's 65,536-character issue-body limit, report the byte count and stop before `gh issue create` — the failure would otherwise land after the expensive producing run; the file is intact and re-runnable once trimmed or split. The guard compares bytes (`wc -c`) against the character limit as a deliberate conservative proxy: UTF-8 bytes ≥ characters, so it can only over-reject, never under-reject. This pipeline's guard is the canonical copy of the size pre-flight; `$ace-classic:plan-update` carries one structurally identical copy (Phase 2A step 7, which Phase 2B step 5 executes by reference) — a limit or message change here lands at that site in the same change
 - If the pre-publish duplicate probe finds an existing `- Issue:` line and the user chooses stop, end without creating an issue — not an error path
 - If the derived title is empty (no `Title:` field and no `# ` H1 in the first 25 lines), report the error and stop — do not create the issue
 - If the title resolved only via the H1 fallback and equals one of the skeleton H1s in the pipeline's degenerate-title `case` block, report the degenerate-title guard's message and stop — do not create the issue

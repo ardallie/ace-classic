@@ -6,7 +6,7 @@ disable-model-invocation: false
 
 Present open questions to the user interactively via the `AskUserQuestion` tool.
 
-Every option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every interview surface -- `AskUserQuestion`, ad-hoc prompts in commands, skills, and subagents -- not only to flows that route through `/ace:run-interview`:
+Every option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every interview surface -- `AskUserQuestion`, ad-hoc prompts in commands, skills, and subagents -- not only to flows that route through `/ace-classic:run-interview`:
 
 - Include "keep current behaviour" as a first-class option.
 - Mark exactly one option `(recommended)`, or state explicitly that no recommendation is given.

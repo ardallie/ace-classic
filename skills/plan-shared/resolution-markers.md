@@ -27,7 +27,7 @@ the named reference copy for both -- amend them together with this one:
 ## Resolution states and the marker-to-state map
 
 Five states: applied, advisory, resolved-from-context, resolved-by-interview,
-unresolved. `/ace:plan-update --from-report` maps report markers directly to revisor
+unresolved. `/ace-classic:plan-update --from-report` maps report markers directly to revisor
 states, with no new interview: `[Resolved]` -> resolved-by-interview, `[Question]` ->
 unresolved, `[Advisory]` -> advisory, unprefixed -> applied.
 
@@ -38,7 +38,7 @@ replace `[Question]` with `[Resolved]` in the bullet's leading text, and append 
 `Answer: <resolution>` line after the bullet's last continuation line, via a second Edit
 anchored on the bullet's tail. Do not append a separate summary section: the
 `[Resolved]`/`Answer:` markers are the complete post-interview record, and an unresolved
-finding's `[Question]` prefix is itself the durable record `/ace:plan-update --from-report`
+finding's `[Question]` prefix is itself the durable record `/ace-classic:plan-update --from-report`
 maps to the `unresolved` state.
 
 ## Edit-failure fallback

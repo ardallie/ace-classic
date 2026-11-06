@@ -11,8 +11,8 @@ description: "Writes a retrospective report on a finished run to .ace/retro/ -- 
 
 An optional argument names the run to retrospect (a command name, issue number, or task
 description). Without an argument, retrospect the most recently finished run in this session.
-Sequential invocations that form one piece of work (e.g. `$ace:plan-read` followed by
-`$ace:plan-implement`) count as a single run. If nothing has run in this session and no argument
+Sequential invocations that form one piece of work (e.g. `$ace-classic:plan-read` followed by
+`$ace-classic:plan-implement`) count as a single run. If nothing has run in this session and no argument
 identifies a run, say so and stop -- do not reconstruct a retrospective from artefacts alone.
 
 ## Instructions
@@ -21,7 +21,7 @@ Write the report to `.ace/retro/{yyyyMMdd}-{HHmm}-{run-slug}.md`, where the date
 come from local machine time (`date +%Y%m%d` and `date +%H%M`); slug derived from the command,
 skill, or task name, e.g. `plan-implement-883`. Never overwrite an existing report -- on a
 path collision, append `-2` (then `-3`, etc.) to the run slug. The timestamp idiom and
-collision-increment convention are canonical at `$ace:plan-start` Phase 4
+collision-increment convention are canonical at `$ace-classic:plan-start` Phase 4
 (`../plan-start/SKILL.md`); this file's increment
 target -- the run slug -- is deliberately unaligned with the pack's other targets, and must
 not be synced to match them.
@@ -34,7 +34,7 @@ worth reporting, say so in one line rather than padding it.
 
 ## Report structure
 
-Open the report with an H1 naming the run (e.g. `# Run retrospective -- $ace:plan-implement 883`)
+Open the report with an H1 naming the run (e.g. `# Run retrospective -- $ace-classic:plan-implement 883`)
 and, where applicable, the exact invocation on the next line. Then these sections, in this
 order. The first four are mandatory; omit "Open questions" when there are none.
 

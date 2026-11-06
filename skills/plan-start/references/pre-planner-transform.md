@@ -1,6 +1,6 @@
 # Pre-planner transform and sceptic-veto gate
 
-Executed from `/ace:plan-start` (`${CLAUDE_PLUGIN_ROOT}/skills/plan-start/SKILL.md`): the transform below is
+Executed from `/ace-classic:plan-start` (`${CLAUDE_PLUGIN_ROOT}/skills/plan-start/SKILL.md`): the transform below is
 Phase 2's brief-assembly arm for a detected pre-planner report; the sceptic-veto gate is
 Phase 2.5 in full; the write-back section at the end is executed from Phase 3.
 
@@ -54,7 +54,7 @@ The pre-plan analysis recommends not producing a plan
 (quote: "<matched sentence>"). How would you like to proceed?
 Options:
   1. (Recommended) Abort — surface the recommendation and exit cleanly
-  2. Plan anyway — proceed with full /ace:plan-start
+  2. Plan anyway — proceed with full /ace-classic:plan-start
 ```
 
 When `--skip-interview` is set, default to option 2 (the user opted out of prompts; defaulting to abort would surprise them).
@@ -69,4 +69,4 @@ This is the only pre-flight question justified outside Phase 3.
 
 ## Phase 3 write-back
 
-Executed from `/ace:plan-start` Phase 3 for a synthesised line that originated as a `[blocking]` open question in a pre-planner report: **write the resolution back into the report file** — match the finding by the `Q{n}` identifier the open-question line carries, including its trailing space — the anchor is `Q{n} `, not the bare token, so `Q1 ` never prefix-matches `Q10` (the transform reproduces the line verbatim, so the identifier is the deterministic write-back anchor; when a line carries no `Q{n}` identifier — a report predating the identifier contract — match by the question text instead) and Edit the corresponding `### Question` finding in place — prepend `[Resolved]` to its description and append an `Answer: <resolution>` line — mirroring the Phase 8 validation-report write-back and the pre-planner's own interview mutation. The report's post-pre-planner immutability is deliberately given up here so the artefact never misreports an answered question. On the issue route the report file is the staged copy — apply the same `Q{n}`-anchored Edit there so the drafter reads the resolutions, and additionally post the resolutions to the issue as a single comment (`gh issue comment <n>`), one line per question in the form `Q{n} [Resolved] — Answer: <resolution>`: the published body is immutable, and without the comment the issue would permanently misreport an answered question as blocking-unresolved. One comment per run regardless of how many questions resolved; if the post fails, warn and continue — the staged-copy write-back already feeds the drafter.
+Executed from `/ace-classic:plan-start` Phase 3 for a synthesised line that originated as a `[blocking]` open question in a pre-planner report: **write the resolution back into the report file** — match the finding by the `Q{n}` identifier the open-question line carries, including its trailing space — the anchor is `Q{n} `, not the bare token, so `Q1 ` never prefix-matches `Q10` (the transform reproduces the line verbatim, so the identifier is the deterministic write-back anchor; when a line carries no `Q{n}` identifier — a report predating the identifier contract — match by the question text instead) and Edit the corresponding `### Question` finding in place — prepend `[Resolved]` to its description and append an `Answer: <resolution>` line — mirroring the Phase 8 validation-report write-back and the pre-planner's own interview mutation. The report's post-pre-planner immutability is deliberately given up here so the artefact never misreports an answered question. On the issue route the report file is the staged copy — apply the same `Q{n}`-anchored Edit there so the drafter reads the resolutions, and additionally post the resolutions to the issue as a single comment (`gh issue comment <n>`), one line per question in the form `Q{n} [Resolved] — Answer: <resolution>`: the published body is immutable, and without the comment the issue would permanently misreport an answered question as blocking-unresolved. One comment per run regardless of how many questions resolved; if the post fails, warn and continue — the staged-copy write-back already feeds the drafter.

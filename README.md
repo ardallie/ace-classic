@@ -1,8 +1,15 @@
-# Ace in my space
+# Ace classic
+
+> **Archived snapshot.** Frozen copy of ardallie/ace-in-my-space at 70d8f84 (tag v0.4.2-classic,
+> version 0.4.2) -- the classic `agent-*` suite before `scope-*`/`ws-*` development. Read-only; no further
+> changes. The plugin is renamed ace-classic so it installs alongside the current ace plugin;
+> commands are `/ace-classic:<skill>`. Both suites write to the same .ace/ working directories, so
+> avoid running both in one project at once. Model tiers are mapped in skills/detect-harness/models.md
+> -- adjust them first when running on other models.
 
 A suite of agent skills for planning, multi-agent review, pull-request work, report
-publication, and harness detection. It ships as a single plugin named `ace`, distributed
-from the `ace-in-my-space` marketplace (this repository).
+publication, and harness detection. It ships as a single plugin named `ace-classic`,
+distributed from the `ace-classic` marketplace (this repository).
 
 Twenty skills and three subagent payloads. The skills invoke one another by name, so they
 are packaged and versioned together rather than split per workflow.
@@ -12,106 +19,106 @@ are packaged and versioned together rather than split per workflow.
 ### Claude Code
 
 ```
-/plugin marketplace add ardallie/ace-in-my-space
-/plugin install ace@ace-in-my-space
+/plugin marketplace add ardallie/ace-classic
+/plugin install ace-classic@ace-classic
 ```
 
 The same two steps from a shell:
 
 ```
-claude plugin marketplace add ardallie/ace-in-my-space
-claude plugin install ace@ace-in-my-space
+claude plugin marketplace add ardallie/ace-classic
+claude plugin install ace-classic@ace-classic
 ```
 
 `claude plugin install` takes `--scope user` (default), `project`, or `local`. For local
 development, point the marketplace at a checkout instead of the GitHub slug:
 
 ```
-claude plugin marketplace add /path/to/ace-in-my-space
+claude plugin marketplace add /path/to/ace-classic
 ```
 
-Every skill registers under `/ace:{name}` -- for example `/ace:plan-start`. The `ace`
+Every skill registers under `/ace-classic:{name}` -- for example `/ace-classic:plan-start`. The `ace-classic`
 plugin namespace supplies uniqueness, so the inner names carry no suite prefix of their
-own. Subagents register under `ace:{name}` -- `ace:plan-drafter` -- and must be addressed
+own. Subagents register under `ace-classic:{name}` -- `ace-classic:plan-drafter` -- and must be addressed
 that way. Always use the plugin-qualified form; the suite's own chains do.
 
 ### Codex CLI
 
 The Codex edition ships from this repository as a native Codex plugin. Add the Git
-marketplace, then install `ace`:
+marketplace, then install `ace-classic`:
 
 ```
-codex plugin marketplace add ardallie/ace-in-my-space
-codex plugin add ace@ace-in-my-space
+codex plugin marketplace add ardallie/ace-classic
+codex plugin add ace-classic@ace-classic
 ```
 
-Skills are then invoked as `$ace:plan-start`, since Codex uses `$` mentions rather
+Skills are then invoked as `$ace-classic:plan-start`, since Codex uses `$` mentions rather
 than slash commands.
 
 For local development, point the marketplace at a checkout and install from the same
 marketplace name:
 
 ```
-codex plugin marketplace add /path/to/ace-in-my-space
-codex plugin add ace@ace-in-my-space
+codex plugin marketplace add /path/to/ace-classic
+codex plugin add ace-classic@ace-classic
 ```
 
 ## Commands
 
 The command list below uses the Claude edition's slash form. Under Codex, replace the
-leading `/` with `$`: `/ace:plan-start` becomes `$ace:plan-start`, `/ace:pr-read` becomes
-`$ace:pr-read`, and so on. The skill name after the namespace is the same in both editions.
+leading `/` with `$`: `/ace-classic:plan-start` becomes `$ace-classic:plan-start`, `/ace-classic:pr-read` becomes
+`$ace-classic:pr-read`, and so on. The skill name after the namespace is the same in both editions.
 
 ### Planning
 
-- `/ace:plan-start` -- drafts a plan from a brief, validates it, applies the findings, and
+- `/ace-classic:plan-start` -- drafts a plan from a brief, validates it, applies the findings, and
   publishes the result as a GitHub issue
-- `/ace:plan-validate` -- validates a plan against the codebase and writes a findings
+- `/ace-classic:plan-validate` -- validates a plan against the codebase and writes a findings
   report
-- `/ace:plan-update` -- replaces a published plan issue's body with revised content
-- `/ace:plan-read` -- loads a plan and its handoffs from one or more GitHub issues
-- `/ace:plan-route` -- chooses the workflow (scope, pre-planner, plan-direct,
+- `/ace-classic:plan-update` -- replaces a published plan issue's body with revised content
+- `/ace-classic:plan-read` -- loads a plan and its handoffs from one or more GitHub issues
+- `/ace-classic:plan-route` -- chooses the workflow (scope, pre-planner, plan-direct,
   implement-direct) for a work artefact or issue
-- `/ace:plan-implement` -- implements a published plan issue item by item, then posts the
+- `/ace-classic:plan-implement` -- implements a published plan issue item by item, then posts the
   session handoff
-- `/ace:plan-handoff` -- posts a technical handoff comment to a GitHub issue
+- `/ace-classic:plan-handoff` -- posts a technical handoff comment to a GitHub issue
 
 ### Multi-agent analysis
 
-- `/ace:agent-scope` -- a deliberative panel over a large ambition, producing a staged
+- `/ace-classic:agent-scope` -- a deliberative panel over a large ambition, producing a staged
   scope envelope
-- `/ace:agent-arch-review` -- architectural review over a feature, subsystem, issue, or
+- `/ace-classic:agent-arch-review` -- architectural review over a feature, subsystem, issue, or
   file set
-- `/ace:agent-pre-planner` -- pre-plan analysis producing an enhanced brief plus
+- `/ace-classic:agent-pre-planner` -- pre-plan analysis producing an enhanced brief plus
   consolidated findings
-- `/ace:agent-code-review` -- pre-PR code review producing severity-graded findings
-- `/ace:agent-consultant` -- answers a cross-repository consultation request as the
+- `/ace-classic:agent-code-review` -- pre-PR code review producing severity-graded findings
+- `/ace-classic:agent-consultant` -- answers a cross-repository consultation request as the
   consultant side of the sibling-exchange protocol
 
 ### Pull requests
 
-- `/ace:pr-create` -- creates a pull request from the branch's commits
-- `/ace:pr-read` -- reads pull requests and all three of their comment surfaces into the
+- `/ace-classic:pr-create` -- creates a pull request from the branch's commits
+- `/ace-classic:pr-read` -- reads pull requests and all three of their comment surfaces into the
   session
-- `/ace:pr-response` -- responds to PR review comments with a summary and threaded replies
+- `/ace-classic:pr-response` -- responds to PR review comments with a summary and threaded replies
 
 ### Reports
 
-- `/ace:report-publish` -- publishes a report or plan markdown file as a GitHub issue
-- `/ace:report-triage` -- collates and de-duplicates findings from reports, issues, and PR
+- `/ace-classic:report-publish` -- publishes a report or plan markdown file as a GitHub issue
+- `/ace-classic:report-triage` -- collates and de-duplicates findings from reports, issues, and PR
   threads, verifies each against HEAD, then applies them
 
 ### Utilities
 
-- `/ace:detect-harness` -- detects the agent harness and prints the capability-tier
+- `/ace-classic:detect-harness` -- detects the agent harness and prints the capability-tier
   mapping the other skills resolve spawn models against
-- `/ace:run-interview` -- presents open questions interactively under the option-list
+- `/ace-classic:run-interview` -- presents open questions interactively under the option-list
   rules
-- `/ace:run-retro` -- writes a retrospective report on a finished run
+- `/ace-classic:run-retro` -- writes a retrospective report on a finished run
 
 ### Subagents
 
-`ace:plan-drafter`, `ace:plan-validate`, and `ace:plan-revisor` are spawned by
+`ace-classic:plan-drafter`, `ace-classic:plan-validate`, and `ace-classic:plan-revisor` are spawned by
 the planning skills and are not invoked directly.
 
 ## Rules
@@ -139,7 +146,7 @@ agent payloads into `codex/`.
 ## Harness differences
 
 - Claude invokes skills with slash commands; Codex invokes installed skills as
-  `$ace:{name}`. Codex chains are model-mediated instructions that name both the
+  `$ace-classic:{name}`. Codex chains are model-mediated instructions that name both the
   qualified skill and its sibling `SKILL.md`; Claude chains use the slash-command
   surface.
 - Claude discovers the three custom agents from the plugin's `agents/` directory. The
@@ -177,8 +184,8 @@ The suite assumes the host session provides:
 - a POSIX shell -- the skills' embedded command snippets are written for one (Git Bash on
   Windows)
 
-These are hard requirements, not optional integrations: `/ace:plan-start`,
-`/ace:plan-update`, `/ace:plan-handoff`, `/ace:report-publish`, and every `/ace:pr-*`
+These are hard requirements, not optional integrations: `/ace-classic:plan-start`,
+`/ace-classic:plan-update`, `/ace-classic:plan-handoff`, `/ace-classic:report-publish`, and every `/ace-classic:pr-*`
 skill stop without them.
 
 Skills that cite a host surface this plugin does not ship -- a repository's own skills
@@ -205,25 +212,25 @@ should not be committed.
 Claude Code:
 
 ```
-claude plugin marketplace update ace-in-my-space
-claude plugin update ace
+claude plugin marketplace update ace-classic
+claude plugin update ace-classic
 ```
 
 Codex CLI has no plugin-update command, so the update path is a marketplace upgrade
 followed by a remove and add:
 
 ```
-codex plugin marketplace upgrade ace-in-my-space
-codex plugin remove ace@ace-in-my-space
-codex plugin add ace@ace-in-my-space
+codex plugin marketplace upgrade ace-classic
+codex plugin remove ace-classic@ace-classic
+codex plugin add ace-classic@ace-classic
 ```
 
 For a local checkout, bump the SemVer value in `.codex-plugin/plugin.json` (a build
 metadata cachebuster is sufficient), then reinstall without a marketplace upgrade:
 
 ```
-codex plugin remove ace@ace-in-my-space
-codex plugin add ace@ace-in-my-space
+codex plugin remove ace-classic@ace-classic
+codex plugin add ace-classic@ace-classic
 ```
 
 ## Versioning

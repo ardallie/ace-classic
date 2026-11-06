@@ -1,6 +1,6 @@
 ---
 name: report-triage
-description: "Reads one or more prior reports (local paths, GitHub issues, and/or pull-request review threads, the latter fetched via /ace:pr-read), collates and de-duplicates their findings, verifies each against HEAD, prints a prioritised action plan in the session, and proceeds directly into the apply pass; stops for user input only on relatively equal alternatives or blocking decisions."
+description: "Reads one or more prior reports (local paths, GitHub issues, and/or pull-request review threads, the latter fetched via /ace-classic:pr-read), collates and de-duplicates their findings, verifies each against HEAD, prints a prioritised action plan in the session, and proceeds directly into the apply pass; stops for user input only on relatively equal alternatives or blocking decisions."
 argument-hint: "[<issue>|<pr>|<path> ...]"
 disable-model-invocation: false
 ---
@@ -9,11 +9,11 @@ disable-model-invocation: false
 
 ## Usage
 
-- `/ace:report-triage` — derives the source from the conversation (a report path, issue, or PR reference mentioned earlier)
-- `/ace:report-triage <issue>` — a GitHub issue by bare number (e.g. `123`) or full URL (e.g. `https://github.com/<owner>/<repo>/issues/123`)
-- `/ace:report-triage <pr>` — a GitHub pull request by full URL (e.g. `https://github.com/<owner>/<repo>/pull/123`) or bare number (disambiguated from issues after fetching)
-- `/ace:report-triage <path>` — a local report file (e.g. `reports/2026-review.md`)
-- `/ace:report-triage <issue> <path> <pr>` — any mix of the above, in any order; all sources collate into a single triage
+- `/ace-classic:report-triage` — derives the source from the conversation (a report path, issue, or PR reference mentioned earlier)
+- `/ace-classic:report-triage <issue>` — a GitHub issue by bare number (e.g. `123`) or full URL (e.g. `https://github.com/<owner>/<repo>/issues/123`)
+- `/ace-classic:report-triage <pr>` — a GitHub pull request by full URL (e.g. `https://github.com/<owner>/<repo>/pull/123`) or bare number (disambiguated from issues after fetching)
+- `/ace-classic:report-triage <path>` — a local report file (e.g. `reports/2026-review.md`)
+- `/ace-classic:report-triage <issue> <path> <pr>` — any mix of the above, in any order; all sources collate into a single triage
 
 ## Context
 
@@ -21,7 +21,7 @@ Reports are produced in one session and acted on in another: the producing sessi
 
 Triage output is printed to the conversation and saved nowhere else — no file, no issue. The apply pass consumes it directly, so a persisted artefact would be write-once read-once overhead.
 
-A source report's own consumption or routing advice — a tip to route through another command, a pre-planner recommendation, a stated stopping rule — is advisory context, not a gate: the user's `/ace:report-triage` invocation is the controlling route choice. Honour the triage, and note the alternative route or process directive in the closing summary rather than stopping.
+A source report's own consumption or routing advice — a tip to route through another command, a pre-planner recommendation, a stated stopping rule — is advisory context, not a gate: the user's `/ace-classic:report-triage` invocation is the controlling route choice. Honour the triage, and note the alternative route or process directive in the closing summary rather than stopping.
 
 Run inline (no subagents). Stop for user input only when something genuinely blocks: relatively equal alternative paths, or a decision the code cannot answer.
 
@@ -44,7 +44,7 @@ Read each local file in full. Fetch each issue in a single call, including comme
 gh issue view <issue> --json title,body,state,comments,url
 ```
 
-Fetch each pull request by running `/ace:pr-read <pr>` (`${CLAUDE_PLUGIN_ROOT}/skills/pr-read/SKILL.md`) with comments on — never `--comments no`. The PR's findings are the union of its description and all three comment surfaces (conversation comments, inline review comments, review bodies): no single surface is the complete report, and any individual comment may carry a finding stated nowhere else. The substantive findings routinely sit in the inline review comments, which no issue-oriented fetch returns.
+Fetch each pull request by running `/ace-classic:pr-read <pr>` (`${CLAUDE_PLUGIN_ROOT}/skills/pr-read/SKILL.md`) with comments on — never `--comments no`. The PR's findings are the union of its description and all three comment surfaces (conversation comments, inline review comments, review bodies): no single surface is the complete report, and any individual comment may carry a finding stated nowhere else. The substantive findings routinely sit in the inline review comments, which no issue-oriented fetch returns.
 
 A single bad source fails the run — never silently triage the remainder. Bad sources: a path that does not exist or is empty; an issue that cannot be fetched or whose body is empty or whitespace-only; a pull request that cannot be fetched, or whose description and comment surfaces are all empty; a source from which no findings can be extracted (name the source and say why).
 
@@ -54,7 +54,7 @@ Accept any report shape — code review, architectural review, pre-plan analysis
 
 With multiple sources, collate into one triage: de-duplicate findings that describe the same defect across reports, and record every merge in a dedupe register (which source items merged, and why they are the same finding). Findings may duplicate within a single source as well as across sources — a pull request often carries the same finding once in a review summary comment and again as an inline review comment; merge and register those the same way. The converse also holds: a finding present in only one surface — a lone inline comment, a point made only in the summary or the description — is still a finding, so extract from every surface before de-duplicating; duplication is common, never guaranteed.
 
-Pull requests are the only source type whose findings can arrive with paired responses: an inline review comment may carry threaded replies (paired via `in_reply_to_id`, which `/ace:pr-read` surfaces), and a summary comment may mark items resolved. Responses posted by `/ace:pr-response` carry a literal marker vocabulary — `[x]` (resolved) / `[i]` (not resolved) — so a `[x]`-prefixed reply or summary item is a mechanical resolution claim. Pair each PR finding with its responses during extraction — a response claiming the fix is not a separate finding; it feeds the already-resolved check in Phase 3.
+Pull requests are the only source type whose findings can arrive with paired responses: an inline review comment may carry threaded replies (paired via `in_reply_to_id`, which `/ace-classic:pr-read` surfaces), and a summary comment may mark items resolved. Responses posted by `/ace-classic:pr-response` carry a literal marker vocabulary — `[x]` (resolved) / `[i]` (not resolved) — so a `[x]`-prefixed reply or summary item is a mechanical resolution claim. Pair each PR finding with its responses during extraction — a response claiming the fix is not a separate finding; it feeds the already-resolved check in Phase 3.
 
 ### Phase 3 — Verify against HEAD
 
@@ -102,7 +102,7 @@ Consume the triage output directly:
 - Then re-read each edited file and check every new rule against its neighbours: ordering rules, vocabulary contracts, cross-references. This re-read is unconditional — edits that look correct in isolation can break the surrounding contract. Read each edited file in full by default; an anchored-region re-read (each edit plus its surrounding section) is sufficient only when every edit in that file is a single-line or single-clause substitution and the mechanical sweep passed.
 - Leave the changelist uncommitted for user review; never commit or push unless the user instructs it.
 
-Close with a summary: per-item outcome (applied / applied as elective / applied with design note / deferred / rejected / already resolved), the files that carry elective edits (named per file, so selective revert is mechanical), the verification results, and any item that deviated from its triage entry at apply time. When a triaged source was a pull request, add a next-step tip: once the applied fixes are pushed to the PR head branch, `/ace:pr-response <pr>` posts the review replies.
+Close with a summary: per-item outcome (applied / applied as elective / applied with design note / deferred / rejected / already resolved), the files that carry elective edits (named per file, so selective revert is mechanical), the verification results, and any item that deviated from its triage entry at apply time. When a triaged source was a pull request, add a next-step tip: once the applied fixes are pushed to the PR head branch, `/ace-classic:pr-response <pr>` posts the review replies.
 
 ## Error handling
 

@@ -7,7 +7,7 @@
 
 Receive an absolute path to a draft plan file. Validate the plan against the codebase and write a structured validation report.
 
-This subagent is the canonical implementation of plan validation — both `$ace:plan-start` (chained flow) and `$ace:plan-validate` (standalone flow) route through it.
+This subagent is the canonical implementation of plan validation — both `$ace-classic:plan-start` (chained flow) and `$ace-classic:plan-validate` (standalone flow) route through it.
 
 1. Read the draft plan file in full at the path provided by the parent. No issue-number handling, no flag pre-pass — the path is mandatory. The parent may also pass optional additional instructions; when present, use them to bias which criteria and areas receive scrutiny in step 2.
 2. Validate the plan by exploring the codebase against four criteria:
@@ -63,7 +63,7 @@ This subagent is the canonical implementation of plan validation — both `$ace:
    [numbered list of files read; when the 40-file exploratory cap was reached, note that and list the areas skipped]
    ```
 
-   The `Plan:` line under the H1 is mandatory — it names the exact plan file validated (the path supplied by the parent, made repo-relative). `$ace:plan-update --from-report` cross-checks it against the target issue, so a report without it cannot be safely folded; hand-written reports must include the same line.
+   The `Plan:` line under the H1 is mandatory — it names the exact plan file validated (the path supplied by the parent, made repo-relative). `$ace-classic:plan-update --from-report` cross-checks it against the target issue, so a report without it cannot be safely folded; hand-written reports must include the same line.
 4. Write the report to the exact path supplied by the parent (the parent computes the timestamp and composes `.ace/plans/{yyyyMMdd}-{HHmm}-val-v{n}-{slug}-{8hex}.md`; do not compose or re-derive the path). Create `.ace/plans/` if it does not exist.
 5. Return a trailing fenced ` ```result ` block of `key: value` lines as the final lines of your reply — do not write it into the report file (the report ends with `## Context files`):
 

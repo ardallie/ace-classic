@@ -22,7 +22,7 @@ Derive the slug from a GitHub issue title: strip a leading bracketed label (any 
 prefix, e.g. `[PLAN] `, `[pkg-NN.M] `) and any trailing ` ({n}/{m})` stage suffix, then
 kebab-case and truncate to 3 keywords (hyphen-delimited tokens). Issues published by this
 pipeline are titled `[PLAN] <plan H1>` (optionally with a stage suffix, per
-`$ace:report-publish`) and may be retitled `[pkg-NN.M] ...` by the host's work-packaging
+`$ace-classic:report-publish`) and may be retitled `[pkg-NN.M] ...` by the host's work-packaging
 conventions; without the strip every issue-derived slug leads with the label's keywords.
 
 ## Report-title slug rule

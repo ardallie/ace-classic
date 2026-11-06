@@ -16,11 +16,11 @@ consolidation rules, and the enhanced-brief regeneration rules. Consumers:
   local enhanced-brief rules (the `Scope:`-directive restriction, the derived-brief
   synthesis sentence, the informal-prose-citation bullet)
 
-Two aligned copies diverge deliberately and do not consume this file: `/ace:agent-consultant`
+Two aligned copies diverge deliberately and do not consume this file: `/ace-classic:agent-consultant`
 compresses the context-package checklist to a question-scoped read and restates the
-analyst instructions as its own researcher rules; `/ace:agent-scope` replaces the checklist
+analyst instructions as its own researcher rules; `/ace-classic:agent-scope` replaces the checklist
 with a knowledge-first posture on a smaller read budget, and carries its own panel
-instructions. `/ace:agent-code-review` is not a consumer either, and carries no aligned copy:
+instructions. `/ace-classic:agent-code-review` is not a consumer either, and carries no aligned copy:
 its reviewer instructions and severity-graded consolidation are its own, as its
 `## Shared conventions` section states.
 
@@ -155,7 +155,7 @@ Walk through the original brief's structure and content. Reconstruct it element 
 - Do not reproduce near-byte-identical text under a new heading; preserve the substantive
   prose and weave findings in where they apply
 - Omit context-gathering directives that the analysis has fulfilled — instructions to fetch
-  or read artefacts (e.g., "run /ace:plan-read X", "inspect touched files") have been addressed
+  or read artefacts (e.g., "run /ace-classic:plan-read X", "inspect touched files") have been addressed
   during analysis; exclude them. Preserve directives that express constraints, goals, or
   design questions for the planner.
 - Where the original content is accurate and well-founded, preserve it unchanged

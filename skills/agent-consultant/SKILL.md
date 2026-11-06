@@ -8,10 +8,10 @@ disable-model-invocation: false
 
 ## Usage
 
-- `/ace:agent-consultant` -- uses the most recent request envelope or actionable question set pasted in conversation context
-- `/ace:agent-consultant <file1> <file2> ...` -- reads files as the request: a request envelope, any pack report carrying open questions, or a hand-written question list; further files are grounding context
-- `/ace:agent-consultant <issue>` -- uses the specified issue number (e.g., `85`) as the request
-- `/ace:agent-consultant [--model <name or instruction>] [--agents 1-4] [--publish yes|no] <inputs ...>` -- flags first (in any order), positional second
+- `/ace-classic:agent-consultant` -- uses the most recent request envelope or actionable question set pasted in conversation context
+- `/ace-classic:agent-consultant <file1> <file2> ...` -- reads files as the request: a request envelope, any pack report carrying open questions, or a hand-written question list; further files are grounding context
+- `/ace-classic:agent-consultant <issue>` -- uses the specified issue number (e.g., `85`) as the request
+- `/ace-classic:agent-consultant [--model <name or instruction>] [--agents 1-4] [--publish yes|no] <inputs ...>` -- flags first (in any order), positional second
 - `--model` directs model selection for every researcher (sceptic included) -- a model name or a prose instruction (a tier, a mix, a reference), resolved against the models the harness offers. Omit `--model` to let Phase 4 assign per agent: the sceptic on Tier-2, researchers on Tier-3, plus at most one Tier-2 promotion for a direction-setting question.
 - `--agents N` sets the number of **non-sceptic** researchers (`1-4`). The sceptic is always added on top. Omit `--agents` to auto-size from the question set.
 - `--publish yes|no` -- publish the saved report as a GitHub issue (Phase 9, after the final save). Default `no`: the report's consumer sits in the requesting repository and receives it by hand-carry per `${CLAUDE_PLUGIN_ROOT}/skills/agent-shared/sibling-exchange-protocol.md`, so an issue minted here is invisible where the answers are needed. Publish on demand when this repository wants its own durable record -- e.g. complementary proposals worth tracking locally.
@@ -28,7 +28,7 @@ Every answer serves one of two goals, and says which:
 
 A question this repository cannot settle is a first-class outcome, not a failure: the answer says so, states what is missing, and routes it back rather than speculating. A question resting on a false premise about this repository is answered by correcting the premise first -- the corrected answer is worth more than a literal one.
 
-Like `/ace:agent-scope` and `/ace:agent-pre-planner`, this skill takes no `--prior` flag: the protocol's self-containment rule makes each round independently actionable, so a follow-up round arrives as a fresh request envelope and any prior-round files ride along as ordinary grounding inputs.
+Like `/ace-classic:agent-scope` and `/ace-classic:agent-pre-planner`, this skill takes no `--prior` flag: the protocol's self-containment rule makes each round independently actionable, so a follow-up round arrives as a fresh request envelope and any prior-round files ride along as ordinary grounding inputs.
 
 ## Task
 
@@ -38,7 +38,7 @@ Nine phases executed in order.
 
 Pre-pass: strip leading `--model {value}`, `--agents {value}`, and `--publish {value}` flags. They may appear in any order, before the positional arguments.
 
-- `--model` value, when supplied, directs model selection for every researcher (sceptic included). The value is prose carrying model information -- a model name, a tier, a mix, a reasoning-effort hint, or a reference to such information (e.g. `--model Tier-3`, `--model use a mixture of Tier-1 and Tier-3`). There is no accepted-values list and no unknown-value parse error: Phase 4 reads the value as an instruction and resolves it against the models available in the current harness. The value boundary is judged, not parsed: unquoted multi-word values are well-formed, and the executing agent judges where the model directive ends and the positional arguments begin, exactly as it judges any other prose instruction; quoting can disambiguate a genuinely ambiguous boundary but is never required. A missing value (nothing after `--model` readable as model guidance) is a parse error: report it and stop. If `--model` is omitted, Phase 4 assigns each researcher's model. Model guidance may equally arrive in the additional instructions (e.g. "a mixture of Tier-1 and Tier-3"): Phase 4 honours both the same way, as a per-researcher assignment recorded in the report's researcher surface. (The rule is shared with `/ace:agent-pre-planner`, `/ace:agent-arch-review`, `/ace:agent-code-review`, and `/ace:agent-scope` Phase 1; each command records the assignment in its own report's analyst surface -- a deliberate per-skeleton divergence, not drift.)
+- `--model` value, when supplied, directs model selection for every researcher (sceptic included). The value is prose carrying model information -- a model name, a tier, a mix, a reasoning-effort hint, or a reference to such information (e.g. `--model Tier-3`, `--model use a mixture of Tier-1 and Tier-3`). There is no accepted-values list and no unknown-value parse error: Phase 4 reads the value as an instruction and resolves it against the models available in the current harness. The value boundary is judged, not parsed: unquoted multi-word values are well-formed, and the executing agent judges where the model directive ends and the positional arguments begin, exactly as it judges any other prose instruction; quoting can disambiguate a genuinely ambiguous boundary but is never required. A missing value (nothing after `--model` readable as model guidance) is a parse error: report it and stop. If `--model` is omitted, Phase 4 assigns each researcher's model. Model guidance may equally arrive in the additional instructions (e.g. "a mixture of Tier-1 and Tier-3"): Phase 4 honours both the same way, as a per-researcher assignment recorded in the report's researcher surface. (The rule is shared with `/ace-classic:agent-pre-planner`, `/ace-classic:agent-arch-review`, `/ace-classic:agent-code-review`, and `/ace-classic:agent-scope` Phase 1; each command records the assignment in its own report's analyst surface -- a deliberate per-skeleton divergence, not drift.)
 - `--agents` value is an integer `1-4` and sets the number of non-sceptic researchers. If `--agents` is present but its value is missing, non-integer, or outside `1-4`, report the valid range (`1-4`) and stop. If omitted, Phase 4 auto-sizes from the question set.
 - `--publish` value defaults to `no`; accepted values `yes|no`. If the value is missing or unknown, report the valid values and stop. Drives Phase 9.
 
@@ -98,7 +98,7 @@ Capture the working-tree state (`git status --porcelain`) and the current commit
 
 **Naming.** Name each researcher `consult-{lens-slug}-{suffix}` (e.g. `consult-write-contracts-a3f9b2c1`); the sceptic is `consult-sceptic-{suffix}`. These names fill the report's `## Researchers` list.
 
-Spawn all members via the `Agent` tool (`subagent_type: "general-purpose"`, per-member `model` as assigned) in a single message so they run concurrently. Spawn-model prescriptions here are tier references (`Tier-1`-`Tier-3`); resolve them at spawn time per the consumer contract in `${CLAUDE_PLUGIN_ROOT}/skills/detect-harness/SKILL.md` -- against the `Harness:` block already in context, invoking `/ace:detect-harness` first if none is present. Where the detect-harness package is absent, resolve tiers against the harness's own model catalogue. Spawn any researcher expected to run file-creating execution probes with `isolation: "worktree"`, so probe artefacts never exist in the shared tree the other members are reading.
+Spawn all members via the `Agent` tool (`subagent_type: "general-purpose"`, per-member `model` as assigned) in a single message so they run concurrently. Spawn-model prescriptions here are tier references (`Tier-1`-`Tier-3`); resolve them at spawn time per the consumer contract in `${CLAUDE_PLUGIN_ROOT}/skills/detect-harness/SKILL.md` -- against the `Harness:` block already in context, invoking `/ace-classic:detect-harness` first if none is present. Where the detect-harness package is absent, resolve tiers against the harness's own model catalogue. Spawn any researcher expected to run file-creating execution probes with `isolation: "worktree"`, so probe artefacts never exist in the shared tree the other members are reading.
 
 **Package handoff** -- assemble the context package into a temporary file and pass its path to each member; the content is fixed at assembly time, so determinism is preserved. The package carries: the request verbatim (recap included); the member's owned questions; the Phase 3 exploration notes and recorded gate results (established facts -- do not re-run); the grounding file's path (consultable, exempt from the read cap); and any additional instructions.
 
@@ -135,7 +135,7 @@ The orchestrator owns the final report. Consolidation rules:
 - Consolidate complementary proposals as `P{n}` entries, deduplicated and pruned against the sceptic's over-build view; each carries an effort band, what it unlocks for the requester, and the evidence it rests on.
 - An answer or proposal that hinges on this repository's owner's willingness (would this side accept the change? which of its options does this side prefer?) is drafted as assessment with an explicit `Owner decision pending:` note -- Phase 8 interviews exactly these. Write the closing line as the literal `Owner decision pending: {the decision needed}` and nothing more: never draft the decision, its rationale, or its caveats here -- Phase 8 supplies them, and a pre-drafted decision is fabricated owner consent.
 
-**Standard header fields.** The `Title:`, `Type:`, and `Date:` lines open `## Summary` and must sit within the first 25 lines of the file -- `/ace:report-publish` composes the issue title from them via `grep -m1` line matches. `Title:` is concise, human-readable, suitable as a GitHub issue title, with no trailing full stop and no references to other issues or sources. Never emit `Stage:` -- a consultation is not a stage of anything.
+**Standard header fields.** The `Title:`, `Type:`, and `Date:` lines open `## Summary` and must sit within the first 25 lines of the file -- `/ace-classic:report-publish` composes the issue title from them via `grep -m1` line matches. `Title:` is concise, human-readable, suitable as a GitHub issue title, with no trailing full stop and no references to other issues or sources. Never emit `Stage:` -- a consultation is not a stage of anything.
 
 Output the report:
 
@@ -221,10 +221,10 @@ Overwrite the same file path used in Phase 7, re-applying the Phase 7 self-conta
 
 Runs in every path that saved a report -- after Phase 7 when there is no owner gate, and after Phase 8 regardless of its outcome; the file on disk at this point is what gets published.
 
-- **`--publish no` (default)** -- do not create an issue. The final summary prints the saved report path, the hand-carry tip, and the ready-to-run line `/ace:report-publish {report path}` for the on-demand local record.
+- **`--publish no` (default)** -- do not create an issue. The final summary prints the saved report path, the hand-carry tip, and the ready-to-run line `/ace-classic:report-publish {report path}` for the on-demand local record.
 - **`--publish yes`** -- publish the saved report per `## Producer publish phase` in `${CLAUDE_PLUGIN_ROOT}/skills/report-publish/SKILL.md`. Two divergences hold here: this report never carries a `Stage:` field (Phase 6 -- a consultation is not a stage of anything), so the title composes from `Title:`/`Type:` alone; and the additive issue URL sits beside the hand-carry tip rather than a next-step tip, because the issue lives in this repository and the requester cannot see it.
 
-**Consultant-discovered local defects.** When the research surfaced a defect in this repository itself (e.g. a contract mis-declaration the consultation exposed), the final summary lists each one explicitly and names this repository's own route for filing it -- publishing the answers report locally (`--publish yes`, or the printed `/ace:report-publish` line) or capturing it per the repository's backlog conventions. The advisory boundary holds: the consultant files nothing itself.
+**Consultant-discovered local defects.** When the research surfaced a defect in this repository itself (e.g. a contract mis-declaration the consultation exposed), the final summary lists each one explicitly and names this repository's own route for filing it -- publishing the answers report locally (`--publish yes`, or the printed `/ace-classic:report-publish` line) or capturing it per the repository's backlog conventions. The advisory boundary holds: the consultant files nothing itself.
 
 ## Constraints
 
@@ -252,4 +252,4 @@ Runs in every path that saved a report -- after Phase 7 when there is no owner g
 - If a researcher fails or returns empty output, proceed per Phase 5; the sceptic specifically is re-spawned once, and its final absence is recorded in `## Summary`
 - If the Phase 8 `AskUserQuestion` fails as a tool, apply collected decisions, leave the rest pending with the marker, and proceed to Phase 9
 - If the report write or overwrite fails, retry once; if it still fails, output the report in full so the user can save it manually
-- If issue creation fails in Phase 9, report the `gh` error verbatim and print the ready-to-run `/ace:report-publish {report path}` line
+- If issue creation fails in Phase 9, report the `gh` error verbatim and print the ready-to-run `/ace-classic:report-publish {report path}` line

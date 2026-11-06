@@ -1,6 +1,6 @@
 ---
 name: plan-implement
-description: "Implements the plan from a GitHub issue: loads it via /ace:plan-read, gates on the Validation audit footer's unresolved-question count, executes the work items sequentially with per-item verification, then posts the session handoff via /ace:plan-handoff. Use when a published plan exists and the user asks to implement it. Do not use when no plan has been published yet (that is /ace:plan-start), or for /ace:plan-route's implement-direct route, which deliberately has no entry-point command."
+description: "Implements the plan from a GitHub issue: loads it via /ace-classic:plan-read, gates on the Validation audit footer's unresolved-question count, executes the work items sequentially with per-item verification, then posts the session handoff via /ace-classic:plan-handoff. Use when a published plan exists and the user asks to implement it. Do not use when no plan has been published yet (that is /ace-classic:plan-start), or for /ace-classic:plan-route's implement-direct route, which deliberately has no entry-point command."
 argument-hint: "[<issue>]"
 disable-model-invocation: false
 ---
@@ -9,23 +9,23 @@ disable-model-invocation: false
 
 ## Usage
 
-- `/ace:plan-implement` — uses the issue number from conversation context
-- `/ace:plan-implement <issue>` — implements the plan from the specified issue (e.g., `85`)
+- `/ace-classic:plan-implement` — uses the issue number from conversation context
+- `/ace-classic:plan-implement <issue>` — implements the plan from the specified issue (e.g., `85`)
 
 ## Context
 
-Run this after the plan has been created and published (`/ace:plan-start`, or `/ace:report-publish` for a hand-published plan file). The issue description contains the plan; comments may contain handoffs from prior sessions. The `## Validation audit` footer, when present, is produced by `/ace:plan-start` Phase 9 (or `/ace:plan-update --from-report` Phase 2A) and records whether unresolved questions remain.
+Run this after the plan has been created and published (`/ace-classic:plan-start`, or `/ace-classic:report-publish` for a hand-published plan file). The issue description contains the plan; comments may contain handoffs from prior sessions. The `## Validation audit` footer, when present, is produced by `/ace-classic:plan-start` Phase 9 (or `/ace-classic:plan-update --from-report` Phase 2A) and records whether unresolved questions remain.
 
 ## Task
 
-1. Load the plan by running `/ace:plan-read` (pass the issue number if provided as argument).
+1. Load the plan by running `/ace-classic:plan-read` (pass the issue number if provided as argument).
 2. Inspect the trailing `## Validation audit` block in the plan body, if present.
    - Parse `Validation report: <path>`, `Validated on: <timestamp>`, `Unresolved questions: <N>`.
    - If the block is absent or malformed, proceed silently (a hand-published plan can lack the footer).
    - If `Unresolved questions:` is absent (zero-questions plans omit the line per the audit-footer contract — the bullet is appended only when the count is greater than zero) or `N` equals zero, proceed silently.
    - If `N > 0`, print the count and the report path, then ask via `AskUserQuestion`: "Proceed with `<N>` unresolved questions?" with options:
      - "Proceed" (Recommended) — payoff: each question is surfaced in context when the relevant work item is reached.
-     - "Stop and run /ace:plan-update first" — payoff: all questions are resolved before any code changes.
+     - "Stop and run /ace-classic:plan-update first" — payoff: all questions are resolved before any code changes.
 3. Parse the plan body into ordered work items.
 4. Implement each work item sequentially:
    - Make the changes.
@@ -33,7 +33,7 @@ Run this after the plan has been created and published (`/ace:plan-start`, or `/
    - Report the outcome before proceeding to the next item.
 5. After the last item, run the project's full test suite once, using the repository's standard test command derived at runtime. A long-running suite exceeds the foreground Bash timeout, so launch it in the background. The run summary (`N passed / 0 failed`, exit 0) is the authoritative signal — a load or collection error in any edited test file fails the whole run — so per-file confirmation is better done with a scoped assertion (e.g. a grep sweep for removed or renamed symbols) than by fishing per-file lines out of a truncated reporter stream.
 6. After all items are processed, summarise what was implemented and list any items skipped or deferred, with reasons.
-7. Invoke `/ace:plan-handoff <issue>`, passing the same issue number used in step 1, to post a technical handoff comment documenting the implementation session.
+7. Invoke `/ace-classic:plan-handoff <issue>`, passing the same issue number used in step 1, to post a technical handoff comment documenting the implementation session.
 
 ## Requirements
 
@@ -44,5 +44,5 @@ Run this after the plan has been created and published (`/ace:plan-start`, or `/
 
 ## Error handling
 
-- Issue resolution failures (number cannot be determined, issue does not exist or is inaccessible) are handled by `/ace:plan-read`'s own `## Error handling`, which step 1 runs fully by reference.
-- If the session ends mid-loop (interruption, or a failure the user stops on), no on-disk progress marker exists: completed items survive only in the working tree. Recovery is a fresh `/ace:plan-implement <issue>` run — compare the plan's work items against the tree state, report which items already appear implemented, and confirm the resume point with the user before continuing. A `/ace:plan-handoff <issue>` comment posted for the partial session is the durable progress record the next run reads via step 1.
+- Issue resolution failures (number cannot be determined, issue does not exist or is inaccessible) are handled by `/ace-classic:plan-read`'s own `## Error handling`, which step 1 runs fully by reference.
+- If the session ends mid-loop (interruption, or a failure the user stops on), no on-disk progress marker exists: completed items survive only in the working tree. Recovery is a fresh `/ace-classic:plan-implement <issue>` run — compare the plan's work items against the tree state, report which items already appear implemented, and confirm the resume point with the user before continuing. A `/ace-classic:plan-handoff <issue>` comment posted for the partial session is the durable progress record the next run reads via step 1.

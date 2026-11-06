@@ -59,8 +59,8 @@ gate in `## Summary`) — proceed to the interview over all open questions. On o
   interview tool — the routed markers and correlation line are still applied through the
   interview phase's save step, which becomes mandatory whenever the gate routed anything.
 - **Print the hand-off instructions** in the final summary: run
-  `$ace:agent-consultant {request file} {this report file}` in the sibling repository; carry
+  `$ace-classic:agent-consultant {request file} {this report file}` in the sibling repository; carry
   its answers report back and pass it as an input to the next run here — a re-scope
-  (`$ace:agent-scope {this report path} {answers path}`) or the owning stage's pre-planner run
+  (`$ace-classic:agent-scope {this report path} {answers path}`) or the owning stage's pre-planner run
   with the answers file appended. No other fold-in machinery exists; the matching
   `Exchange:` ids are the audit link.

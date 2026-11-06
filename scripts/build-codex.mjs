@@ -73,7 +73,7 @@ const convertFrontmatter = (text) => {
 };
 
 // Skill identities come from the directories that own a SKILL.md. Nothing in this generator
-// may assume a brand prefix on an inner name: the `ace` plugin namespace supplies uniqueness.
+// may assume a brand prefix on an inner name: the `ace-classic` plugin namespace supplies uniqueness.
 const readSkillInventory = (skillsRoot) => {
   const names = readdirSync(skillsRoot)
     .filter((entry) => existsSync(join(skillsRoot, entry, "SKILL.md")))
@@ -89,10 +89,10 @@ const readSkillInventory = (skillsRoot) => {
 const skillInventory = readSkillInventory(join(repositoryRoot, "skills"));
 
 const convertCommandsAndPaths = (text) => {
-  // Claude invokes a plugin skill as `/ace:{skill}`; Codex mentions the same skill as
-  // `$ace:{skill}`. Only the sigil differs, so the conversion is structural -- it never needs
+  // Claude invokes a plugin skill as `/ace-classic:{skill}`; Codex mentions the same skill as
+  // `$ace-classic:{skill}`. Only the sigil differs, so the conversion is structural -- it never needs
   // to know an inner skill name.
-  let converted = text.replace(/\r\n/g, "\n").replaceAll("/ace:", "$ace:");
+  let converted = text.replace(/\r\n/g, "\n").replaceAll("/ace-classic:", "$ace-classic:");
 
   converted = converted
     .replaceAll("${CLAUDE_PLUGIN_ROOT}/skills/", "../")
@@ -272,8 +272,8 @@ interviewSkill = replaceRequired(
 );
 interviewSkill = replaceRequired(
   interviewSkill,
-  "Every option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every interview surface -- `request_user_input`, ad-hoc prompts in commands, skills, and subagents -- not only to flows that route through `$ace:run-interview`:",
-  "Use `request_user_input` when it is exposed in Plan mode. It accepts at most three questions per call and two or three mutually exclusive options per question; put the single `(Recommended)` option first and include keep-current behaviour as one of the options. When the tool is unavailable in Default mode, ask the same question in concise plain text with the same ordered options, the same `(Recommended)` marker, and an explicit invitation for a free-form alternative. Tool availability changes presentation only, never the decision shape.\n\nEvery option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every Codex interview surface -- `request_user_input`, its plain-text fallback, and ad-hoc prompts in skills and subagents -- not only to flows that route through `$ace:run-interview`:",
+  "Every option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every interview surface -- `request_user_input`, ad-hoc prompts in commands, skills, and subagents -- not only to flows that route through `$ace-classic:run-interview`:",
+  "Use `request_user_input` when it is exposed in Plan mode. It accepts at most three questions per call and two or three mutually exclusive options per question; put the single `(Recommended)` option first and include keep-current behaviour as one of the options. When the tool is unavailable in Default mode, ask the same question in concise plain text with the same ordered options, the same `(Recommended)` marker, and an explicit invitation for a free-form alternative. Tool availability changes presentation only, never the decision shape.\n\nEvery option list must follow these rules. This skill is the canonical statement of the option-list rules; they apply to every Codex interview surface -- `request_user_input`, its plain-text fallback, and ad-hoc prompts in skills and subagents -- not only to flows that route through `$ace-classic:run-interview`:",
   "run-interview option-list rules pointer",
 );
 interviewSkill = replaceRequired(
@@ -363,9 +363,9 @@ let planStart = readFileSync(planStartPath, "utf8");
 for (const [before, after, label] of [
   ["Runs outside Claude Code's plan mode.", "Runs in either Codex collaboration mode and does not depend on Plan mode.", "plan-start plan-mode note"],
   ["The `plan-drafter` subagent receives Read, `rg --files`, `rg`, Bash, and Write — the set declared in its `tools:` frontmatter (Bash is constrained to read-only use by the agent prompt).", "The `plan-drafter` supporting payload uses `exec_command`, `rg --files`, `rg`, and `apply_patch`, and is passed through `collaboration.spawn_agent.message`.", "plan-start drafter tool set"],
-  ["Spawn a single subagent via `collaboration.spawn_agent`:\n- `agent_type`: `ace:plan-drafter`", "Read `../../agents/plan-drafter.md` in full, then spawn one subagent through `collaboration.spawn_agent`:\n- `task_name`: `ace_plan_drafter_{8hex}`\n- `agent_type`: `\"default\"`\n- `fork_turns`: `\"none\"`\n- `message`: the complete payload file followed by the run-specific brief and target-path inputs", "plan-start drafter spawn block"],
-  ["Spawn a fresh subagent via `collaboration.spawn_agent` to validate the draft plan against the codebase:\n\n- `agent_type`: `ace:plan-validate`", "Read `../../agents/plan-validate.md` in full, then spawn a fresh validation subagent through `collaboration.spawn_agent`:\n\n- `task_name`: `ace_plan_validate_{8hex}`\n- `agent_type`: `\"default\"`\n- `fork_turns`: `\"none\"`\n- `message`: the complete payload file followed by the draft path, report target path, and exploratory-read cap", "plan-start validator spawn block"],
-  ["- Otherwise, spawn the `plan-revisor` subagent via `collaboration.spawn_agent`:\n\n  - `agent_type`: `ace:plan-revisor`", "- Otherwise, read `../../agents/plan-revisor.md` in full and spawn the revisor through `collaboration.spawn_agent`:\n\n  - `task_name`: `ace_plan_revisor_{8hex}`\n  - `agent_type`: `\"default\"`\n  - `fork_turns`: `\"none\"`\n  - `message`: the complete payload file followed by the v1 path, report path, and parsed findings", "plan-start revisor spawn block"],
+  ["Spawn a single subagent via `collaboration.spawn_agent`:\n- `agent_type`: `ace-classic:plan-drafter`", "Read `../../agents/plan-drafter.md` in full, then spawn one subagent through `collaboration.spawn_agent`:\n- `task_name`: `ace_plan_drafter_{8hex}`\n- `agent_type`: `\"default\"`\n- `fork_turns`: `\"none\"`\n- `message`: the complete payload file followed by the run-specific brief and target-path inputs", "plan-start drafter spawn block"],
+  ["Spawn a fresh subagent via `collaboration.spawn_agent` to validate the draft plan against the codebase:\n\n- `agent_type`: `ace-classic:plan-validate`", "Read `../../agents/plan-validate.md` in full, then spawn a fresh validation subagent through `collaboration.spawn_agent`:\n\n- `task_name`: `ace_plan_validate_{8hex}`\n- `agent_type`: `\"default\"`\n- `fork_turns`: `\"none\"`\n- `message`: the complete payload file followed by the draft path, report target path, and exploratory-read cap", "plan-start validator spawn block"],
+  ["- Otherwise, spawn the `plan-revisor` subagent via `collaboration.spawn_agent`:\n\n  - `agent_type`: `ace-classic:plan-revisor`", "- Otherwise, read `../../agents/plan-revisor.md` in full and spawn the revisor through `collaboration.spawn_agent`:\n\n  - `task_name`: `ace_plan_revisor_{8hex}`\n  - `agent_type`: `\"default\"`\n  - `fork_turns`: `\"none\"`\n  - `message`: the complete payload file followed by the v1 path, report path, and parsed findings", "plan-start revisor spawn block"],
   ["- `model`: value from Phase 1 (default `{Tier-2}`)", "- `model` and `reasoning_effort`: the pair resolved from Phase 1 (default `{Tier-2}`)", "plan-start drafter model pair"],
   ["- `model`: **always** `{Tier-3}`.", "- `model` and `reasoning_effort`: **always** the `{Tier-3}` pair.", "plan-start validator model pair"],
   ["  - `model`: `{Tier-3}`", "  - `model` and `reasoning_effort`: the `{Tier-3}` pair", "plan-start revisor model pair"],
@@ -380,7 +380,7 @@ const planValidatePath = join(outputRoot, "skills", "plan-validate", "SKILL.md")
 let planValidate = readFileSync(planValidatePath, "utf8");
 planValidate = replaceRequired(
   planValidate,
-  "Spawn the `plan-validate` subagent via `collaboration.spawn_agent` with `agent_type: ace:plan-validate` and `model: {Tier-3}`",
+  "Spawn the `plan-validate` subagent via `collaboration.spawn_agent` with `agent_type: ace-classic:plan-validate` and `model: {Tier-3}`",
   "Read `../../agents/plan-validate.md` in full, then spawn a validation subagent through `collaboration.spawn_agent` with a run-suffixed `task_name`, `agent_type: \"default\"`, `fork_turns: \"none\"`, `message` set to the complete payload followed by the run inputs, and the Tier-3 `model` plus `reasoning_effort`",
   "standalone validator spawn pattern",
 );
@@ -449,7 +449,7 @@ writeFileSync(detectPath, detect, "utf8");
 const modelsPath = join(outputRoot, "skills", "detect-harness", "models.md");
 let models = readFileSync(modelsPath, "utf8");
 for (const [before, after, label] of [
-  ["Data file for `$ace:detect-harness` (`../detect-harness/SKILL.md`),", "Data file for `$ace:detect-harness` (`SKILL.md`),", "models data-file self reference"],
+  ["Data file for `$ace-classic:detect-harness` (`../detect-harness/SKILL.md`),", "Data file for `$ace-classic:detect-harness` (`SKILL.md`),", "models data-file self reference"],
   ["\nOn each harness a tier maps to a model and an effort: on Claude a model alias and an\neffort level, on Codex a model and a reasoning effort.", " Each\ntier maps to a model and a reasoning effort.", "models per-harness tier preamble"],
   [/\n### Claude\n[\s\S]*?(?=\n### Codex\n)/, "", "models Claude tier block strip"],
 ]) {

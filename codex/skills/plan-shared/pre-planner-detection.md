@@ -7,9 +7,9 @@ action on a match in its own file. Consumers:
 - `../plan-start/SKILL.md` -- Phase 2 detection (a match makes the report the
   transform driver)
 - `../plan-validate/SKILL.md` -- Phase 1 rejection guard (a match stops with a
-  `$ace:plan-start` redirect)
+  `$ace-classic:plan-start` redirect)
 - `../plan-update/SKILL.md` -- Phase 2A step 1 rejection guard (a match stops
-  with a `$ace:plan-start` redirect)
+  with a `$ace-classic:plan-start` redirect)
 
 ## The two-rule detection
 

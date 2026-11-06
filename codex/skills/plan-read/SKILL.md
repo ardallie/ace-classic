@@ -9,18 +9,18 @@ description: Loads plan and handoffs from a GitHub issue to continue work starte
 
 ## Usage
 
-- `$ace:plan-read` - Uses the issue number from conversation context
-- `$ace:plan-read <issue>` - Loads context from the specified issue (e.g., `85`)
-- `$ace:plan-read <issue> <issue> ...` - Loads multiple issues; fetched one at a time and presented as a condensed cross-issue synthesis (see step 4)
-- `$ace:plan-read <issue> then <follow-on>` - Loads the issue, then handles the named follow-on (e.g. `$ace:plan-read 957 then handle phase 1`); see step 5.
+- `$ace-classic:plan-read` - Uses the issue number from conversation context
+- `$ace-classic:plan-read <issue>` - Loads context from the specified issue (e.g., `85`)
+- `$ace-classic:plan-read <issue> <issue> ...` - Loads multiple issues; fetched one at a time and presented as a condensed cross-issue synthesis (see step 4)
+- `$ace-classic:plan-read <issue> then <follow-on>` - Loads the issue, then handles the named follow-on (e.g. `$ace-classic:plan-read 957 then handle phase 1`); see step 5.
 
 ## Context
 
-Use this to continue work started in a previous session. The issue contains the plan (description) and any handoff comments documenting progress. After completing work, use `$ace:plan-handoff` to document the session.
+Use this to continue work started in a previous session. The issue contains the plan (description) and any handoff comments documenting progress. After completing work, use `$ace-classic:plan-handoff` to document the session.
 
 ## Task
 
-1. Identify the issue number — or numbers, in the multi-issue form — from the arguments, or search the conversation for a GitHub issue URL or number, taking the most recent when the conversation carries more than one. If none is found, report this and stop. This rule is canonical; its aligned copies within the plan-workflow bundle are `$ace:plan-handoff` step 1 and `$ace:plan-update` Phase 1, and an amendment lands at all three. (`../pr-create/SKILL.md` and `../pr-response/SKILL.md` carry the same idiom undeclared, pending a relay-workflow-scoped pass. `$ace:pr-read` step 2 phrases the same stop as "report usage and stop". The wording differs and the behaviour does not; both are in the set and neither is a drift to repair.)
+1. Identify the issue number — or numbers, in the multi-issue form — from the arguments, or search the conversation for a GitHub issue URL or number, taking the most recent when the conversation carries more than one. If none is found, report this and stop. This rule is canonical; its aligned copies within the plan-workflow bundle are `$ace-classic:plan-handoff` step 1 and `$ace-classic:plan-update` Phase 1, and an amendment lands at all three. (`../pr-create/SKILL.md` and `../pr-response/SKILL.md` carry the same idiom undeclared, pending a relay-workflow-scoped pass. `$ace-classic:pr-read` step 2 phrases the same stop as "report usage and stop". The wording differs and the behaviour does not; both are in the set and neither is a drift to repair.)
 2. Fetch all data in a single call per issue:
    ```bash
    gh issue view <issue> --json title,body,state,comments
@@ -44,7 +44,7 @@ Use this to continue work started in a previous session. The issue contains the 
    - Comments in chronological order (revised prompt, handoffs, discussion)
 
    The verbatim presentation above applies to the single-issue case. With multiple issues — or whenever the combined content is too large to present usefully verbatim (roughly 30 KB or more) — present a condensed cross-issue synthesis instead: per-issue state, decisions, and open items, plus the cross-issue relationships, noting where the full bodies were saved so they remain readable on demand.
-5. Summarise the current state and ask how to proceed. When the invocation named a follow-on after `then`, skip the question; for a follow-on that directs a planning artefact, invoke `$ace:plan-route` — it ends the turn with the recommended invocation rather than acting — and otherwise act on the follow-on directly
+5. Summarise the current state and ask how to proceed. When the invocation named a follow-on after `then`, skip the question; for a follow-on that directs a planning artefact, invoke `$ace-classic:plan-route` — it ends the turn with the recommended invocation rather than acting — and otherwise act on the follow-on directly
 
 ## Requirements
 

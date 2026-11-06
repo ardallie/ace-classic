@@ -24,7 +24,7 @@ staleness check]
 
 [1-2 paragraphs: what the brief is about, which areas of the codebase are affected, and key constraints or goals]
 
-**Tip:** start a new conversation and pass this report to `/ace:agent-pre-planner` or a planning agent. If the Workload assessment splits the scope into multiple briefs, start one conversation per brief and run that brief's printed `Pre-planner invocation:` line. Do not pass this report directly to `/ace:plan-start` -- it is not a pre-planner report, and its open questions would not surface there.
+**Tip:** start a new conversation and pass this report to `/ace-classic:agent-pre-planner` or a planning agent. If the Workload assessment splits the scope into multiple briefs, start one conversation per brief and run that brief's printed `Pre-planner invocation:` line. Do not pass this report directly to `/ace-classic:plan-start` -- it is not a pre-planner report, and its open questions would not surface there.
 
 ## Analysts
 
@@ -55,7 +55,7 @@ entry per suggested brief in the form below, the single-brief case included.]
 - Brief {N} -- {title} — covers {ids; mark foldable extras `(optional)`}; depends on {prior briefs or none}
   Stamp: flags [{set flags as `|`-separated tokens from the four defined names, or `none` — no prose}]; Pre-planner: RECOMMENDED | SKIP (advisory)
   Rationale: {optional single line linking the set flags to the covered findings; omit or emit consistently across every brief in the report}
-  Pre-planner invocation: `/ace:agent-pre-planner {report path} Scope: Brief {N} -- {title} ({ids}) only`
+  Pre-planner invocation: `/ace-classic:agent-pre-planner {report path} Scope: Brief {N} -- {title} ({ids}) only`
 [Emit the `Pre-planner invocation` line in the multi-brief case only; its `{ids}` are the
 brief's covers list minus resolved questions, so the two lines never disagree. The `Stamp:`
 line's outer square brackets are part of the emitted line.]

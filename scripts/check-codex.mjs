@@ -7,8 +7,12 @@ const errors = [];
 
 // The plugin namespace. Composed rather than written out where a retired form is being
 // rejected, so this checker does not itself contain the strings it forbids.
-const NS = "ace";
-const MARKETPLACE = "ace-in-my-space";
+const NS = "ace-classic";
+const MARKETPLACE = "ace-classic";
+// The namespace before the ace-classic snapshot rename. Its forms (`/NS:`, `$NS:`, bare
+// `NS:` agent addresses, `NS-{name}` identifiers) must not survive anywhere in the tree.
+const LEGACY_NS = "ace";
+const legacyNamespacePattern = new RegExp(String.raw`(?<![A-Za-z0-9_.-])[/$]?${LEGACY_NS}:[a-z0-9{]`);
 
 const walkFiles = (directory) => {
   const files = [];
@@ -25,7 +29,7 @@ const codexSkillFiles = walkFiles(join(codexRoot, "skills"));
 const sourceAgentFiles = walkFiles(join(root, "agents"));
 const codexAgentFiles = walkFiles(join(codexRoot, "agents"));
 const codexFiles = [...codexSkillFiles, ...codexAgentFiles];
-// README documents both editions, so a `$ace:` mention is legitimate there and nowhere else
+// README documents both editions, so a `$ace-classic:` mention is legitimate there and nowhere else
 // in the Claude source of truth.
 const sourceContractFiles = [...sourceSkillFiles, ...sourceAgentFiles];
 const sourceFiles = [...sourceContractFiles, join(root, "README.md")];
@@ -40,7 +44,7 @@ for (const [label, files, convertedFiles] of [
 }
 
 // -- Inventories -------------------------------------------------------------------------
-// The `ace` plugin namespace supplies uniqueness, so an inner name must never repeat it.
+// The `ace-classic` plugin namespace supplies uniqueness, so an inner name must never repeat it.
 
 const skillDirectories = (skillsRoot) => readdirSync(skillsRoot)
   .filter((entry) => existsSync(join(skillsRoot, entry, "SKILL.md")))
@@ -94,10 +98,10 @@ for (const path of sourceAgentFiles) {
   if (stem.startsWith("ace-")) errors.push(`${relative(root, path)}: agent name ${stem} repeats the plugin namespace`);
 }
 
-// The exact identifiers this rename retired: `ace-` plus every live skill and agent name.
+// The exact identifiers the 0.2.0 rename retired: `ace-` plus every live skill and agent name.
 // `plan-validate` names both a skill and an agent, so the 23 map entries dedupe to 22 strings.
 const retiredIdentifiers = [...new Set([...sourceSkillNames, ...sourceAgentNames])]
-  .map((name) => `${NS}-${name}`)
+  .map((name) => `${LEGACY_NS}-${name}`)
   .sort();
 
 // -- Codex edition -----------------------------------------------------------------------
@@ -125,17 +129,18 @@ for (const path of codexFiles) {
   for (const identifier of retiredIdentifiers) {
     if (text.includes(identifier)) errors.push(`${relative(root, path)}: contains retired identifier ${identifier}`);
   }
+  if (legacyNamespacePattern.test(text)) errors.push(`${relative(root, path)}: contains pre-snapshot ${LEGACY_NS}: namespace`);
 
-  const commandPattern = /(?<![A-Za-z0-9_.${}-])\/ace-[a-z0-9]+(?:-[a-z0-9]+)*/g;
+  const commandPattern = /(?<![A-Za-z0-9_.${}-])\/ace-(?!classic:)[a-z0-9]+(?:-[a-z0-9]+)*/g;
   if (commandPattern.test(text)) errors.push(`${relative(root, path)}: contains Claude slash invocation`);
 
   // A Claude plugin-agent address has no counterpart in Codex; the payload spawn blocks must
   // have been rewritten to `agent_type: "default"`.
-  for (const match of text.matchAll(/(?<![$A-Za-z0-9_/-])ace:([a-z0-9][a-z0-9*-]*)/g)) {
-    errors.push(`${relative(root, path)}: contains Claude plugin-agent address ace:${match[1]}`);
+  for (const match of text.matchAll(/(?<![$A-Za-z0-9_/-])ace-classic:([a-z0-9][a-z0-9*-]*)/g)) {
+    errors.push(`${relative(root, path)}: contains Claude plugin-agent address ace-classic:${match[1]}`);
   }
 
-  for (const match of text.matchAll(/\$ace:([a-z0-9][a-z0-9*-]*)/g)) {
+  for (const match of text.matchAll(/\$ace-classic:([a-z0-9][a-z0-9*-]*)/g)) {
     if (match[1].includes("*")) continue;
     if (!skillNames.has(match[1])) errors.push(`${relative(root, path)}: unknown chain target ${match[1]}`);
   }
@@ -175,28 +180,29 @@ for (const path of sourceFiles) {
   for (const identifier of retiredIdentifiers) {
     if (text.includes(identifier)) errors.push(`${relative(root, path)}: contains retired identifier ${identifier}`);
   }
+  if (legacyNamespacePattern.test(text)) errors.push(`${relative(root, path)}: contains pre-snapshot ${LEGACY_NS}: namespace`);
   for (const [label, token] of [
     ["double-prefixed Claude invocation", `/${NS}:${NS}-`],
     ["double-prefixed agent address", `${NS}:${NS}-`],
   ]) {
     if (text.includes(token)) errors.push(`${relative(root, path)}: contains ${label}`);
   }
-  if (sourceContractFiles.includes(path) && text.includes("$ace:")) {
+  if (sourceContractFiles.includes(path) && text.includes("$ace-classic:")) {
     errors.push(`${relative(root, path)}: contains a Codex mention in the Claude source`);
   }
 
-  const barePattern = /(?<![A-Za-z0-9_.${}-])\/ace-[a-z0-9]+(?:-[a-z0-9]+)*/g;
+  const barePattern = /(?<![A-Za-z0-9_.${}-])\/ace-(?!classic:)[a-z0-9]+(?:-[a-z0-9]+)*/g;
   if (barePattern.test(text)) errors.push(`${relative(root, path)}: contains unqualified /ace- invocation`);
 
   // Chain edges must be plugin-qualified and must resolve.
-  // A `*` marks a documentation wildcard such as `/ace:pr-*`, never a real chain edge.
-  for (const match of text.matchAll(/\/ace:([a-z0-9][a-z0-9*-]*)/g)) {
+  // A `*` marks a documentation wildcard such as `/ace-classic:pr-*`, never a real chain edge.
+  for (const match of text.matchAll(/\/ace-classic:([a-z0-9][a-z0-9*-]*)/g)) {
     if (match[1].includes("*")) continue;
-    if (!sourceSkillNames.includes(match[1])) errors.push(`${relative(root, path)}: unknown skill target /ace:${match[1]}`);
+    if (!sourceSkillNames.includes(match[1])) errors.push(`${relative(root, path)}: unknown skill target /ace-classic:${match[1]}`);
   }
-  for (const match of text.matchAll(/(?<![$A-Za-z0-9_/-])ace:([a-z0-9][a-z0-9*-]*)/g)) {
+  for (const match of text.matchAll(/(?<![$A-Za-z0-9_/-])ace-classic:([a-z0-9][a-z0-9*-]*)/g)) {
     if (match[1].includes("*")) continue;
-    if (!sourceAgentNames.includes(match[1])) errors.push(`${relative(root, path)}: unknown agent address ace:${match[1]}`);
+    if (!sourceAgentNames.includes(match[1])) errors.push(`${relative(root, path)}: unknown agent address ace-classic:${match[1]}`);
   }
 
   // Suite-internal plugin-root paths must resolve against this checkout.
@@ -221,25 +227,25 @@ if (codexManifest.skills !== "./codex/skills/") errors.push("Codex manifest skil
 // A stale marketplace listing must not ship alongside a bumped plugin: all four version
 // fields carry the same value or the build fails.
 const claudeMarketplace = JSON.parse(readFileSync(join(root, ".claude-plugin", "marketplace.json"), "utf8"));
-const claudeEntry = claudeMarketplace.plugins?.find((plugin) => plugin.name === "ace");
+const claudeEntry = claudeMarketplace.plugins?.find((plugin) => plugin.name === NS);
 if (claudeMarketplace.name !== MARKETPLACE) errors.push(`Claude marketplace name must be ${MARKETPLACE}`);
-if (!claudeEntry) errors.push("Claude marketplace has no ace entry");
-if (claudeEntry?.source !== "./") errors.push("Claude marketplace ace source must be ./");
+if (!claudeEntry) errors.push(`Claude marketplace has no ${NS} entry`);
+if (claudeEntry?.source !== "./") errors.push(`Claude marketplace ${NS} source must be ./`);
 if (claudeMarketplace.metadata?.version !== claudeManifest.version) {
   errors.push(`marketplace metadata.version ${claudeMarketplace.metadata?.version} != plugin version ${claudeManifest.version}`);
 }
 if (claudeEntry?.version !== claudeManifest.version) {
-  errors.push(`marketplace ace entry version ${claudeEntry?.version} != plugin version ${claudeManifest.version}`);
+  errors.push(`marketplace ${NS} entry version ${claudeEntry?.version} != plugin version ${claudeManifest.version}`);
 }
 
 const marketplace = JSON.parse(readFileSync(join(root, ".agents", "plugins", "marketplace.json"), "utf8"));
-const entry = marketplace.plugins?.find((plugin) => plugin.name === "ace");
+const entry = marketplace.plugins?.find((plugin) => plugin.name === NS);
 if (marketplace.name !== MARKETPLACE) errors.push(`Codex marketplace name must be ${MARKETPLACE}`);
-if (!entry) errors.push("Codex marketplace has no ace entry");
-if (entry?.source !== "./") errors.push("Codex marketplace ace source must be ./");
+if (!entry) errors.push(`Codex marketplace has no ${NS} entry`);
+if (entry?.source !== "./") errors.push(`Codex marketplace ${NS} source must be ./`);
 if (entry?.policy?.installation !== "AVAILABLE") errors.push("Codex marketplace installation policy must be AVAILABLE");
 if (entry?.policy?.authentication !== "ON_INSTALL") errors.push("Codex marketplace authentication policy must be ON_INSTALL");
-if (!entry?.category) errors.push("Codex marketplace ace entry needs a category");
+if (!entry?.category) errors.push(`Codex marketplace ${NS} entry needs a category`);
 
 if (errors.length) {
   console.error(errors.map((error) => `ERROR: ${error}`).join("\n"));

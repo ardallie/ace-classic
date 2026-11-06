@@ -1,6 +1,6 @@
 ---
 name: pr-response
-description: "Responds to PR review comments based on work done in the conversation: reads the PR via /ace:pr-read, gates on the fixes being pushed to the PR head branch, then posts a summary comment and threaded replies."
+description: "Responds to PR review comments based on work done in the conversation: reads the PR via /ace-classic:pr-read, gates on the fixes being pushed to the PR head branch, then posts a summary comment and threaded replies."
 argument-hint: "[<pr>]"
 disable-model-invocation: false
 ---
@@ -9,8 +9,8 @@ disable-model-invocation: false
 
 ## Usage
 
-- `/ace:pr-response` - Uses the PR number from conversation context
-- `/ace:pr-response {PR_NUM}` - Responds to comments on the specified PR
+- `/ace-classic:pr-response` - Uses the PR number from conversation context
+- `/ace-classic:pr-response {PR_NUM}` - Responds to comments on the specified PR
 
 ## Context
 
@@ -20,7 +20,7 @@ This skill responds to PR review feedback — comments left by an automated revi
 
 1. Identify the PR number from {PR_NUM} argument, or search the conversation for a PR URL or number, taking the most recent when the conversation carries more than one. If not found, report this and stop.
 2. Fetch repository info: `gh repo view --json owner,name`
-3. Read the PR and every comment surface by running `/ace:pr-read {PR_NUM}` (`${CLAUDE_PLUGIN_ROOT}/skills/pr-read/SKILL.md`) — it returns conversation comments, review bodies, and the inline review comments whose `id` values the replies API below needs. Run it afresh even when an earlier command in this session already fetched the PR — the surfaces move between commands (new comments, force-pushes), and the address-every-comment requirement below needs the current set; never reuse a same-session fetch
+3. Read the PR and every comment surface by running `/ace-classic:pr-read {PR_NUM}` (`${CLAUDE_PLUGIN_ROOT}/skills/pr-read/SKILL.md`) — it returns conversation comments, review bodies, and the inline review comments whose `id` values the replies API below needs. Run it afresh even when an earlier command in this session already fetched the PR — the surfaces move between commands (new comments, force-pushes), and the address-every-comment requirement below needs the current set; never reuse a same-session fetch
 4. Push-state gate: confirm the fixes are actually on the PR head branch before claiming resolution. Fetch the head ref (`git fetch origin <head-branch>`, where `<head-branch>` is the `headRefName` from step 3's output), then diff the touched files against it (`git diff origin/<head-branch> -- <files>` — expected empty). The empty diff proves local matches remote, not that the fix is present — a reverted working tree also passes it — so additionally confirm each fix commit is on the remote head: `git merge-base --is-ancestor <sha> origin/<head-branch>` for each fix-commit SHA the `[x]` replies will cite (the Requirements section obliges citing them; SHA and ref arguments only, so no MINGW path-conversion exposure). If the fixes exist only in the local working tree or on unpushed commits, stop and report the divergence instead of posting replies; a `[x]` that points reviewers at a change not on the branch is untruthful.
 5. Analyse each comment against what was implemented in the conversation
 6. Post a summary comment: write the body to a temporary file and run `gh pr comment {PR_NUM} --body-file <file>` (same rationale as step 7's `-F body=@<file>`)

@@ -44,7 +44,7 @@ SKILL.md; the two flags below are common to every flag-taking consumer.
 - Model guidance may equally arrive in the additional instructions (e.g. "a mixture of
   Tier-1 and Tier-3") rather than via `--model`: the spawn phase honours both the same way,
   as a per-member assignment. The rule is shared across the consumers above and
-  `/ace:agent-consultant` Phase 1; each command records the resulting assignment in its own
+  `/ace-classic:agent-consultant` Phase 1; each command records the resulting assignment in its own
   report's analyst surface — a deliberate per-skeleton divergence, not drift.
 - `--publish` value; accepted values `yes|no` (the default is per skill, stated in its
   Usage section). If the value is missing or unknown, report the valid values and stop.

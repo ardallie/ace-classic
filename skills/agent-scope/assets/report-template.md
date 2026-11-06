@@ -19,8 +19,8 @@ sibling-seam probe was assigned}.
 [1-2 paragraphs: the ambition, the chosen direction, and the envelope's reach]
 
 **Tip:** work the staged split top-down: start a fresh conversation per stage and run its
-printed `/ace:agent-pre-planner` invocation (the saved path and the published issue number are
-equally valid). Do not pass this envelope to `/ace:plan-start` -- it is not a plan brief; each
+printed `/ace-classic:agent-pre-planner` invocation (the saved path and the published issue number are
+equally valid). Do not pass this envelope to `/ace-classic:plan-start` -- it is not a plan brief; each
 stage's pre-planner run produces one.
 
 ## Panel
@@ -84,14 +84,14 @@ update pass locates the dependent statements by these markers.]
 [The framing paragraph below is mandatory and emitted verbatim.]
 
 The split is advisory and downstream-correctable: stage boundaries were drawn
-knowledge-first with light grounding; each stage's `/ace:agent-pre-planner` run re-derives
+knowledge-first with light grounding; each stage's `/ace-classic:agent-pre-planner` run re-derives
 and corrects its own stage, and no later planning session may treat a boundary as
 binding.
 
 Stage {k} -- {title}: goals covered ({G ids}); depends on ({prior stages or none});
 validation gate ({observable behaviour or the project's standard verification}); owns
 ({the A/Q ids routed to it})
-Pre-planner invocation: `/ace:agent-pre-planner {report path} Scope: Stage {k} -- {title} ({goal ids}) only`
+Pre-planner invocation: `/ace-classic:agent-pre-planner {report path} Scope: Stage {k} -- {title} ({goal ids}) only`
 
 [One entry per stage, in dependency order. Optionally one paragraph before them: how the
 split was cut -- where the panel or the interview moved a boundary, and why. The

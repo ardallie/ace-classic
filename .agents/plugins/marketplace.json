@@ -1,11 +1,11 @@
 {
-  "name": "ace-in-my-space",
+  "name": "ace-classic",
   "interface": {
-    "displayName": "Ace in my space"
+    "displayName": "Ace classic"
   },
   "plugins": [
     {
-      "name": "ace",
+      "name": "ace-classic",
       "source": "./",
       "policy": {
         "installation": "AVAILABLE",

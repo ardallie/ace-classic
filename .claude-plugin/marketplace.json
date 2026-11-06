@@ -1,21 +1,21 @@
 {
-  "name": "ace-in-my-space",
+  "name": "ace-classic",
   "owner": {
     "name": "ardallie",
     "url": "https://github.com/ardallie"
   },
   "metadata": {
-    "description": "Marketplace for the Ace in my space agent-skill suite.",
+    "description": "Frozen snapshot of the classic ace suite -- marketplace for the Ace classic agent-skill suite.",
     "version": "0.4.2"
   },
   "plugins": [
     {
-      "name": "ace",
+      "name": "ace-classic",
       "source": "./",
-      "description": "Ace in my space -- a suite of agent skills for planning, multi-agent review, pull requests, report publication, and harness detection.",
+      "description": "Frozen snapshot of the classic ace suite -- Ace classic, a suite of agent skills for planning, multi-agent review, pull requests, report publication, and harness detection.",
       "version": "0.4.2",
       "license": "MIT",
-      "homepage": "https://github.com/ardallie/ace-in-my-space",
+      "homepage": "https://github.com/ardallie/ace-classic",
       "keywords": [
         "planning",
         "code-review",

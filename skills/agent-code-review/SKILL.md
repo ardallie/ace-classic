@@ -1,6 +1,6 @@
 ---
 name: agent-code-review
-description: Runs a multi-agent pre-PR code review (two or three specialists plus a sceptic) over the current branch, a PR, a remote or local branch, a commit, or a directory. Produces a severity-graded findings report (Critical/High/Moderate/Minor) consumed via /ace:report-triage. Use for non-trivial changes before opening a PR -- not for trivial fixes, and not for architectural review, which is /ace:agent-arch-review. Advisory only -- does not implement changes.
+description: Runs a multi-agent pre-PR code review (two or three specialists plus a sceptic) over the current branch, a PR, a remote or local branch, a commit, or a directory. Produces a severity-graded findings report (Critical/High/Moderate/Minor) consumed via /ace-classic:report-triage. Use for non-trivial changes before opening a PR -- not for trivial fixes, and not for architectural review, which is /ace-classic:agent-arch-review. Advisory only -- does not implement changes.
 argument-hint: "[--model <name or instruction>] [--prior <report-path>] [--reviewers 2|3] [--checks full|cheap|skip] [--publish yes|no] [pr <number|URL>|origin/<branch>|branch <name>|commit <sha>|directory <path>]"
 disable-model-invocation: false
 ---
@@ -8,13 +8,13 @@ disable-model-invocation: false
 
 ## Usage
 
-- `/ace:agent-code-review` — current branch vs default branch
-- `/ace:agent-code-review pr <number|URL>` — PR by number (current repo) or full URL
-- `/ace:agent-code-review origin/<branch>` — remote branch vs default branch
-- `/ace:agent-code-review branch <name>` — local branch vs default branch
-- `/ace:agent-code-review commit <sha>` — single commit diff (SHA must be at least 7 characters)
-- `/ace:agent-code-review directory <path>` — all files in the specified directory
-- `/ace:agent-code-review [--model <name or instruction>] [--prior <report-path>] [--reviewers 2|3] [--checks full|cheap|skip] [--publish yes|no] <scope ...>` — flags first (in any order), positional second
+- `/ace-classic:agent-code-review` — current branch vs default branch
+- `/ace-classic:agent-code-review pr <number|URL>` — PR by number (current repo) or full URL
+- `/ace-classic:agent-code-review origin/<branch>` — remote branch vs default branch
+- `/ace-classic:agent-code-review branch <name>` — local branch vs default branch
+- `/ace-classic:agent-code-review commit <sha>` — single commit diff (SHA must be at least 7 characters)
+- `/ace-classic:agent-code-review directory <path>` — all files in the specified directory
+- `/ace-classic:agent-code-review [--model <name or instruction>] [--prior <report-path>] [--reviewers 2|3] [--checks full|cheap|skip] [--publish yes|no] <scope ...>` — flags first (in any order), positional second
 - `--model` directs model selection for every reviewer — a model name or a prose instruction (a tier, a mix, a reference), resolved against the models the harness offers. Omit `--model` to use the default assignment: the sceptic on Tier-2, the specialists on Tier-3.
 - `--prior P` — path to a previous code-review report for the same source; reviewers verify its findings against the current state (re-review). Prior reports are pushed only when passed explicitly — there is no auto-detection. The prior report also carries forward interview decisions (its Clarifications section) — pass it for any repeat review of the same scope, not only to verify remediation.
 - `--reviewers N` — specialist count, `2` or `3` (default `3`); the sceptic is always spawned in addition, so the team is N+1. Intended for re-reviews and small scopes; keep the default for first reviews.
@@ -212,7 +212,7 @@ Follow the publish phase in `${CLAUDE_PLUGIN_ROOT}/skills/agent-shared/report-co
 ## Constraints
 
 - Do not proceed to implementation unless the user explicitly approves — the review is advisory only
-- The command ends after Phase 8 (publication, or the printed `/ace:report-publish` line under the default `--publish no`).
+- The command ends after Phase 8 (publication, or the printed `/ace-classic:report-publish` line under the default `--publish no`).
 
 ## Error handling
 

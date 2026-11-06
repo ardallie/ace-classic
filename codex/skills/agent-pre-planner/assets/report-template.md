@@ -12,14 +12,14 @@ Analysts: {N} non-sceptic + 1 sceptic. Models: {the split -- e.g. `4 x Tier-3 + 
 Grounded at: [per the shared grammar -- read by this skill's own git-state staleness check
 when the report is passed back as a positional input]
 
-[Why the shared `Source:` path-list rule is load-bearing here: `$ace:plan-start`'s pre-planner
+[Why the shared `Source:` path-list rule is load-bearing here: `$ace-classic:plan-start`'s pre-planner
 transform (`../plan-start/references/pre-planner-transform.md`) copies the
 field's value verbatim into the drafter brief's `Original sources:` line, and the drafter
 resolves each file item as a path.]
 
 [1-2 paragraphs: what the brief is about, which areas of the codebase are affected, and key constraints or goals]
 
-**Tip:** start a new conversation and pass this report to `$ace:plan-start` (or a planning agent).
+**Tip:** start a new conversation and pass this report to `$ace-classic:plan-start` (or a planning agent).
 
 ## Analysts
 
