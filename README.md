@@ -1,11 +1,16 @@
 # Ace classic
 
-> **Archived snapshot.** Frozen copy of ardallie/ace-in-my-space at 70d8f84 (tag v0.4.2-classic,
-> version 0.4.2) -- the classic `agent-*` suite before `scope-*`/`ws-*` development. Read-only; no further
-> changes. The plugin is renamed ace-classic so it installs alongside the current ace plugin;
-> commands are `/ace-classic:<skill>`. Both suites write to the same .ace/ working directories, so
-> avoid running both in one project at once. Model tiers are mapped in skills/detect-harness/models.md
-> -- adjust them first when running on other models.
+> **Archived snapshot.** Frozen copy of ardallie/ace-in-my-space at 70d8f84 (version 0.4.2) -- the
+> classic `agent-*` suite before `scope-*`/`ws-*` development. Read-only; no further changes. The
+> plugin is renamed ace-classic so it installs alongside the current ace plugin; commands are
+> `/ace-classic:<skill>`. Both suites write to the same .ace/ working directories, so avoid running
+> both in one project at once. Install from the default branch as shown below. The tag
+> v0.4.2-classic marks the upstream cut point (70d8f84, before the rename) and is not an install
+> ref: its tree still declares plugin `ace` in marketplace `ace-in-my-space`, which clashes with
+> the current ace plugin. Model tiers are mapped in skills/detect-harness/models.md -- adjust them
+> first when running on other models, then run `node scripts/build-codex.mjs` so the Codex copy,
+> codex/skills/detect-harness/models.md, follows. The Codex derivation, Updating, and Versioning
+> sections below are inherited from upstream and apply only to local forks of this snapshot.
 
 A suite of agent skills for planning, multi-agent review, pull-request work, report
 publication, and harness detection. It ships as a single plugin named `ace-classic`,

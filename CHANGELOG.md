@@ -11,7 +11,9 @@ Archived snapshot. This repository is a frozen, read-only copy of `ardallie/ace-
 commit `70d8f84` (version `0.4.2`, tag `v0.4.2-classic`) -- the classic `agent-*`, `plan-*`,
 `pr-*`, `report-*`, `run-*`, and `detect-harness` suite as it stood before any `scope-*` or `ws-*`
 skill existed. History up to that commit is preserved; no further changes are planned. Manifest
-versions stay at `0.4.2`.
+versions stay at `0.4.2`. The tag `v0.4.2-classic` marks that upstream cut point, before the
+rename, so it is not an install ref: its tree still declares plugin `ace` in marketplace
+`ace-in-my-space`. Install from the default branch.
 
 ### Changed -- plugin renamed to `ace-classic`
 
